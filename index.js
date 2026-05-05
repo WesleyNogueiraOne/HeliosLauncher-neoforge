@@ -253,7 +253,7 @@ function createWindow() {
     })*/
 
     win.removeMenu()
-
+    win.webContents.openDevTools({ mode: 'detach' })
     win.resizable = true
 
     win.on('closed', () => {

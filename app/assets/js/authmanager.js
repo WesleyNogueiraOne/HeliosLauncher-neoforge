@@ -382,7 +382,7 @@ async function validateSelectedMicrosoftAccount(){
             )
             ConfigManager.save()
             return true
-        } catch(err) {
+        } catch(_err) {
             return false
         }
     } else {
@@ -401,7 +401,7 @@ async function validateSelectedMicrosoftAccount(){
             ConfigManager.save()
             return true
         }
-        catch(err) {
+        catch(_err) {
             return false
         }
     }
@@ -422,4 +422,22 @@ exports.validateSelected = async function(){
         return await validateSelectedMojangAccount()
     }
     
+}
+
+/**
+ * Add an offline account.
+ * 
+ * @param {string} username The account username.
+ * @returns {Object} The authenticated account object.
+ */
+exports.addOfflineAccount = function(username) {
+    const uuid = require('crypto').randomUUID().replace(/-/g, '')
+    const ret = ConfigManager.addMojangAuthAccount(
+        uuid,
+        'offline',
+        username,
+        username
+    )
+    ConfigManager.save()
+    return ret
 }

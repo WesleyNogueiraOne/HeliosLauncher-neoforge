@@ -693,10 +693,21 @@ class ProcessBuilder {
         // Resolve the server declared libraries.
         const servLibs = this._resolveServerLibraries(mods)
 
+
+        const neoforgeLibs = {}
+if(this.modManifest.libraries) {
+    for(const lib of this.modManifest.libraries) {
+        if(lib.downloads && lib.downloads.artifact) {
+            const libPath = path.join(this.libPath, lib.downloads.artifact.path)
+            const versionIndependentId = lib.name.substring(0, lib.name.lastIndexOf(':'))
+            neoforgeLibs[versionIndependentId] = libPath
+        }
+    }
+}
+const finalLibs = {...mojangLibs, ...neoforgeLibs, ...servLibs}
         // Merge libraries, server libs with the same
         // maven identifier will override the mojang ones.
         // Ex. 1.7.10 forge overrides mojang's guava with newer version.
-        const finalLibs = {...mojangLibs, ...servLibs}
         cpArgs = cpArgs.concat(Object.values(finalLibs))
 
         this._processClassPathList(cpArgs)
@@ -839,7 +850,7 @@ class ProcessBuilder {
         // Locate Forge/Fabric/Libraries
         for(let mdl of mdls){
             const type = mdl.rawModule.type
-            if(type === Type.ForgeHosted || type === Type.Fabric || type === Type.Library){
+            if(type === Type.ForgeHosted || type === Type.Fabric || type === Type.Library || type === 'NeoForge'){
                 libs[mdl.getVersionlessMavenIdentifier()] = mdl.getPath()
                 if(mdl.subModules.length > 0){
                     const res = this._resolveModuleLibraries(mdl)
