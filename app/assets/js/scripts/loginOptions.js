@@ -20,14 +20,14 @@ function resetOfflineLoginForm(){
     offlineLoginForm.style.display = 'none'
     loginOptionActions.style.display = 'block'
     offlineUsernameInput.value = ''
-    offlineUsernameInput.style.borderColor = '#444'
+    offlineUsernameInput.classList.remove('rcInputError')
     offlineUsernameInput.placeholder = Lang.queryJS('loginOptions.offline.placeholder')
     offlineLoginConfirm.disabled = false
     offlineLoginConfirm.textContent = Lang.queryJS('loginOptions.offline.confirm')
 }
 
 function offlineLoginError(msg){
-    offlineUsernameInput.style.borderColor = 'red'
+    offlineUsernameInput.classList.add('rcInputError')
     offlineUsernameInput.value = ''
     offlineUsernameInput.placeholder = msg
     offlineUsernameInput.focus()
@@ -83,7 +83,7 @@ offlineLoginConfirm.onclick = async (e) => {
         return
     }
 
-    offlineUsernameInput.style.borderColor = '#444'
+    offlineUsernameInput.classList.remove('rcInputError')
     offlineLoginConfirm.disabled = true
     offlineLoginConfirm.textContent = Lang.queryJS('loginOptions.offline.loggingIn')
 

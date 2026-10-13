@@ -145,34 +145,57 @@ class ProcessBuilder {
     /**
      * Extrai um pack (.zip de config/kubejs) pra dentro do gameDir.
      *
-     * Guarda um manifesto com os arquivos que vieram do pack. Na próxima extração,
-     * arquivos que estavam no pack anterior e saíram do novo são apagados — assim
-     * um script removido do kubejs some também do PC do jogador. Arquivos que o
-     * jogo ou o jogador criaram (nunca vieram no pack) não são tocados.
+     * Guarda um manifesto (arquivo -> crc) do que veio no pack:
+     *  - Arquivo que saiu do pack é apagado do PC do jogador.
+     *  - Arquivo que o pack NÃO mudou desde a última extração não é reescrito,
+     *    então ajustes do jogador (gráficos, keybinds, HUD) sobrevivem até o
+     *    admin publicar uma versão nova daquele arquivo.
+     *  - kubejs é sempre forçado: scripts precisam bater com o servidor.
+     *  - Arquivos que o jogo ou o jogador criaram (nunca vieram no pack) não são tocados.
      *
      * @param {string} srcFile Caminho do .zip.
      * @param {string} extractTo Pasta relativa ao gameDir (ex: 'kubejs').
      */
     extractPack(srcFile, extractTo){
         const destDir = path.resolve(this.gameDir, extractTo)
-        if(!destDir.startsWith(path.resolve(this.gameDir))) {
+        if(!destDir.startsWith(path.resolve(this.gameDir) + path.sep)) {
             logger.warn('extractTo fora do gameDir, ignorado:', extractTo)
             return
         }
         fs.ensureDirSync(destDir)
+        const force = extractTo === 'kubejs'
 
         const manifestPath = path.join(this.gameDir, '.rootclient', `pack-${extractTo.replace(/[^\w-]/g, '_')}.json`)
-        let previous = []
-        try { previous = fs.readJsonSync(manifestPath) } catch(e) { /* primeira extração */ }
+        let previous = {}
+        try {
+            const m = fs.readJsonSync(manifestPath)
+            previous = Array.isArray(m) ? Object.fromEntries(m.map(rel => [rel, null])) : (m.files || {})
+        } catch(e) { /* primeira extração */ }
 
         const zip = new AdmZip(srcFile)
-        const current = zip.getEntries()
-            .filter(e => !e.isDirectory)
-            .map(e => e.entryName.replace(/\\/g, '/'))
+        const current = {}
+        let written = 0, kept = 0
+        for(const entry of zip.getEntries()) {
+            if(entry.isDirectory) continue
+            // zips feitos no Windows podem vir com '\' no caminho
+            const rel = entry.entryName.replace(/\\/g, '/')
+            const abs = path.resolve(destDir, rel)
+            if(!abs.startsWith(destDir + path.sep)) {
+                logger.warn('Entrada fora da pasta do pack, ignorada:', rel)
+                continue
+            }
+            const crc = entry.header.crc
+            current[rel] = crc
+            if(!force && previous[rel] === crc && fs.existsSync(abs)) {
+                kept++
+                continue
+            }
+            fs.outputFileSync(abs, entry.getData())
+            written++
+        }
 
-        const keep = new Set(current)
-        for(const rel of previous) {
-            if(keep.has(rel)) continue
+        for(const rel of Object.keys(previous)) {
+            if(rel in current) continue
             const abs = path.resolve(destDir, rel)
             if(!abs.startsWith(destDir + path.sep)) continue
             try {
@@ -183,9 +206,8 @@ class ProcessBuilder {
             }
         }
 
-        zip.extractAllTo(destDir, true)
-        fs.outputJsonSync(manifestPath, current)
-        logger.info('Pack extraído:', srcFile, '->', destDir, `(${current.length} arquivos)`)
+        fs.outputJsonSync(manifestPath, { version: 2, files: current })
+        logger.info(`Pack ${extractTo}: ${written} atualizados, ${kept} mantidos (sem mudança no pack).`)
     }
 
     /**

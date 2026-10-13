@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
-
 /* ═══════════════════════════════════════════════════════════════
    ROOT CLIENT — MAGIPUNK / HIGH FANTASY THEME v4.0
    Base dark neutra moderna (glass) × Ouro/Bege alto-fantasia × Arcano verdigris
@@ -1313,70 +1311,6 @@ input[type="range"]::-webkit-slider-thumb {
     justify-content: center;
     background: linear-gradient(135deg, rgba(11,12,16,0.98), rgba(13,15,20,0.97));
     z-index: 50;
-}
-
-/* ═══════════════════════════════ OFFLINE LOGIN FORM */
-#offlineLoginForm {
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 12px;
-}
-
-#offlineUsernameInput {
-    background: rgba(11,12,16,0.85) !important;
-    border: 1px solid rgba(139,105,20,0.3) !important;
-    border-radius: var(--radius) !important;
-    color: var(--gold-soft) !important;
-    font-family: 'Cinzel', serif !important;
-    font-size: 13px !important;
-    letter-spacing: 1px !important;
-    padding: 10px 14px !important;
-    transition: all 0.2s ease !important;
-    width: 100% !important;
-}
-#offlineUsernameInput:focus {
-    outline: none !important;
-    border-color: rgba(231,178,62,0.5) !important;
-    box-shadow: 0 0 10px rgba(231,178,62,0.1) !important;
-}
-#offlineUsernameInput::placeholder { color: rgba(122,95,160,0.4) !important; font-style: italic; }
-
-#offlineLoginConfirm {
-    background: linear-gradient(135deg, rgba(90,210,189,0.4), rgba(42,46,58,0.4)) !important;
-    border: 1px solid rgba(231,178,62,0.4) !important;
-    border-radius: var(--radius) !important;
-    color: var(--gold) !important;
-    font-family: 'Cinzel', serif !important;
-    font-size: 11px !important;
-    letter-spacing: 2px !important;
-    padding: 10px !important;
-    cursor: pointer !important;
-    transition: all 0.25s ease !important;
-    text-transform: uppercase !important;
-}
-#offlineLoginConfirm:hover {
-    background: linear-gradient(135deg, rgba(90,210,189,0.6), rgba(42,46,58,0.6)) !important;
-    border-color: var(--gold) !important;
-    box-shadow: 0 0 12px rgba(231,178,62,0.2) !important;
-}
-#offlineLoginConfirm:disabled { opacity: 0.5 !important; cursor: not-allowed !important; }
-
-#offlineLoginBack {
-    background: transparent !important;
-    border: 1px solid rgba(42,46,58,0.4) !important;
-    border-radius: var(--radius) !important;
-    color: var(--purple-soft) !important;
-    font-family: 'Cinzel', serif !important;
-    font-size: 10px !important;
-    letter-spacing: 1.5px !important;
-    padding: 8px !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease !important;
-}
-#offlineLoginBack:hover {
-    border-color: rgba(231,178,62,0.2) !important;
-    color: var(--gold-soft) !important;
 }
 
 /* ═══════════════════════════════ MISC UTILITIES */

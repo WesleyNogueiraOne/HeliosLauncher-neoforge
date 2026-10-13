@@ -154,7 +154,16 @@ function updateSelectedAccount(authUser){
             document.getElementById('avatarContainer').style.backgroundImage = `url('https://mc-heads.net/body/${authUser.uuid}/right')`
         }
     }
-    user_text.innerHTML = username
+    user_text.textContent = username
+
+    // selo embaixo do nome: tipo real da conta
+    const tag = document.querySelector('.rc-account-tag')
+    if(tag){
+        const labels = { microsoft: 'Microsoft', mojang: 'Mojang', offline: 'Conta offline' }
+        tag.textContent = authUser == null ? 'Clique para entrar' : (labels[authUser.type] || '')
+        tag.classList.toggle('rc-account-tag-none', authUser == null)
+    }
+    if(authUser == null) document.getElementById('avatarContainer').style.backgroundImage = ''
 }
 updateSelectedAccount(ConfigManager.getSelectedAccount())
 
@@ -165,7 +174,7 @@ function updateSelectedServer(serv){
     }
     ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
-    server_selection_button.innerHTML = '&#8226; ' + (serv != null ? serv.rawServer.name : Lang.queryJS('landing.noSelection'))
+    server_selection_button.textContent = serv != null ? serv.rawServer.name : Lang.queryJS('landing.noSelection')
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
@@ -243,6 +252,7 @@ const refreshServerStatus = async (fade = false) => {
 
     let pLabel = Lang.queryJS('landing.serverStatus.server')
     let pVal = Lang.queryJS('landing.serverStatus.offline')
+    let online = false
 
     try {
 
@@ -250,10 +260,16 @@ const refreshServerStatus = async (fade = false) => {
         console.log(servStat)
         pLabel = Lang.queryJS('landing.serverStatus.players')
         pVal = servStat.players.online + '/' + servStat.players.max
+        online = true
 
     } catch (err) {
         loggerLanding.warn('Unable to refresh server status, assuming offline.')
         loggerLanding.debug(err)
+    }
+    const dot = document.querySelector('.rc-server-status .status-dot')
+    if(dot){
+        dot.classList.toggle('online', online)
+        dot.classList.toggle('offline', !online)
     }
     if(fade){
         $('#server_status_wrapper').fadeOut(250, () => {

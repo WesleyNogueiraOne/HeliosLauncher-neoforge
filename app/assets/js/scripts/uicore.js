@@ -179,6 +179,17 @@ document.addEventListener('readystatechange', function () {
 }, false)
 
 /**
+ * Ícone do servidor: URL https do distro, senão o logo do Root Client.
+ *
+ * @param {Object} rawServer Servidor cru do distribution.json.
+ * @returns {string} src pra <img>.
+ */
+function serverIconSrc(rawServer){
+    const icon = rawServer && rawServer.icon
+    return typeof icon === 'string' && /^https:\/\//.test(icon) ? icon : 'assets/images/logo.png'
+}
+
+/**
  * Open web links in the user's default browser.
  */
 $(document).on('click', 'a[href^="http"]', function(event) {

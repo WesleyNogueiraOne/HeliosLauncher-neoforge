@@ -1,6 +1,7 @@
 <div id="loginOptionsContainer" style="display: none;">
     <div id="loginOptionsContent">
         <div class="loginOptionsMainContent">
+            <img class="rcLoginLogo" src="assets/images/logo.png" alt="">
             <h2><%- lang('loginOptions.loginOptionsTitle') %></h2>
             <div class="loginOptionActions">
                 <div class="loginOptionButtonContainer">
@@ -24,39 +25,11 @@
                 </div>
             </div>
             <!-- Offline login form (hidden by default) -->
-            <div id="offlineLoginForm" style="display: none; margin-top: 16px;">
-                <input id="offlineUsernameInput" type="text" placeholder="<%- lang('loginOptions.offlineUsernamePlaceholder') %>" maxlength="16" style="
-                    width: 100%;
-                    padding: 10px;
-                    border-radius: 6px;
-                    border: 1px solid #444;
-                    background: #2a2a2a;
-                    color: #fff;
-                    font-size: 14px;
-                    margin-bottom: 10px;
-                    box-sizing: border-box;
-                "/>
-                <button id="offlineLoginConfirm" style="
-                    width: 100%;
-                    padding: 10px;
-                    border-radius: 6px;
-                    border: none;
-                    background: #4CAF50;
-                    color: #fff;
-                    font-size: 14px;
-                    cursor: pointer;
-                "><%- lang('loginOptions.offlineConfirmButton') %></button>
-                <button id="offlineLoginBack" style="
-                    width: 100%;
-                    padding: 8px;
-                    border-radius: 6px;
-                    border: none;
-                    background: transparent;
-                    color: #aaa;
-                    font-size: 13px;
-                    cursor: pointer;
-                    margin-top: 6px;
-                "><%- lang('loginOptions.offlineBackButton') %></button>
+            <div id="offlineLoginForm" style="display: none;">
+                <input id="offlineUsernameInput" class="rcInput" type="text" placeholder="<%- lang('loginOptions.offlineUsernamePlaceholder') %>" maxlength="16" spellcheck="false" autocomplete="off"/>
+                <p class="rcHint">3 a 16 caracteres: letras, números e _</p>
+                <button id="offlineLoginConfirm" class="rcBtnPrimary"><%- lang('loginOptions.offlineConfirmButton') %></button>
+                <button id="offlineLoginBack" class="rcBtnGhost"><%- lang('loginOptions.offlineBackButton') %></button>
             </div>
             <div id="loginOptionCancelContainer" style="display: none;">
                 <button id="loginOptionCancelButton"><%- lang('loginOptions.cancelButton') %></button>
