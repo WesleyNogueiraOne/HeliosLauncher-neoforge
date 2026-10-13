@@ -1,6 +1,6 @@
 appId: 'com.rootrp.rootclient'
 productName: 'Root Client'
-artifactName: '${productName}-setup-${version}.${ext}'
+artifactName: '${name}-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2026 Root RP'
 
@@ -43,7 +43,7 @@ mac:
       arch:
         - 'x64'
         - 'arm64'
-  artifactName: '${productName}-setup-${version}-${arch}.${ext}'
+  artifactName: '${name}-setup-${version}-${arch}.${ext}'
   category: 'public.app-category.games'
 
 # Linux Configuration

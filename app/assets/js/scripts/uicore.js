@@ -49,7 +49,7 @@ if(!isDev){
                 loggerAutoUpdater.info('New update available', info.version)
                 
                 if(process.platform === 'darwin'){
-                    info.darwindownload = `https://github.com/WesleyNogueiraOne/RootClient/releases/download/v${info.version}/Root-Client-setup-${info.version}-${process.arch === 'arm64' ? 'arm64' : 'x64'}.dmg`
+                    info.darwindownload = `https://github.com/WesleyNogueiraOne/RootClient/releases/download/v${info.version}/root-client-setup-${info.version}-${process.arch === 'arm64' ? 'arm64' : 'x64'}.dmg`
                     showUpdateUI(info)
                 }
                 
