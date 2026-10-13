@@ -6,7 +6,7 @@
     'use strict'
 
     // Seletores que ganham ripple. Fora: botões da barra de janela (pequenos demais).
-    const RIPPLE_SELECTOR = 'button:not(.frameButton), .hootNavItem, .news-tab, .settingsNavItem, .mediaURL, .settingsAuthAccountSelect'
+    const RIPPLE_SELECTOR = 'button:not(.frameButton), .rcNavItem, .news-tab, .settingsNavItem, .mediaURL, .settingsAuthAccountSelect'
 
     document.addEventListener('click', (e) => {
         const el = e.target.closest(RIPPLE_SELECTOR)

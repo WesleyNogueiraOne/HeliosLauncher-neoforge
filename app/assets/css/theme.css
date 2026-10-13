@@ -68,7 +68,7 @@ button { cursor: pointer; }
 button:focus { outline: none; }
 
 /* Titulos e marca em Cinzel (alto fantasia) */
-h1, h2, h3, .welcome-title, #hootTitle, #frameTitleText { font-family: 'Cinzel', serif; }
+h1, h2, h3, .welcome-title, #rcTitle, #frameTitleText { font-family: 'Cinzel', serif; }
 
 /* ═══════════════════════════════ SCROLLBAR */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -221,7 +221,7 @@ body::before {
 }
 
 /* ═══════════════════════════════ SIDEBAR */
-#hootSidebar {
+#rcSidebar {
     position: relative;
     z-index: 20;
     height: 100%;
@@ -236,7 +236,7 @@ body::before {
 }
 
 /* Faixa lateral dourada animada */
-#hootSidebar::after {
+#rcSidebar::after {
     content: '';
     position: absolute;
     top: 0; right: -1px;
@@ -268,7 +268,7 @@ body::before {
 .corner-br { bottom: 6px; right: 6px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
 
 /* ── Logo Area */
-#hootLogoArea {
+#rcLogoArea {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -311,7 +311,7 @@ body::before {
     box-shadow: 0 0 15px rgba(231,178,62,0.3), inset 0 0 10px rgba(0,0,0,0.5);
 }
 
-#hootTitle {
+#rcTitle {
     font-family: 'Cinzel Decorative', 'Cinzel', serif;
     font-size: 12px;
     font-weight: 700;
@@ -323,7 +323,7 @@ body::before {
 }
 
 /* Divisores */
-#hootTitleDivider, .sidebar-divider {
+#rcTitleDivider, .sidebar-divider {
     display: flex;
     align-items: center;
     width: 75%;
@@ -334,7 +334,7 @@ body::before {
 .divider-gem  { font-size: 6px; color: var(--gold); opacity: 0.8; }
 
 /* ── Navegação */
-#hootNav {
+#rcNav {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -344,7 +344,7 @@ body::before {
 }
 
 /* Botão JOGAR */
-#hootPlayBtn {
+#rcPlayBtn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -366,7 +366,7 @@ body::before {
     overflow: hidden;
     box-shadow: 0 8px 22px rgba(231,178,62,0.30), inset 0 1px 0 rgba(255,255,255,0.5), 0 0 0 1px rgba(255,220,130,0.45);
 }
-#hootPlayBtn::before {
+#rcPlayBtn::before {
     content: '';
     position: absolute;
     top: 0; left: -70%;
@@ -376,19 +376,19 @@ body::before {
     animation: playSweep 3.6s ease-in-out infinite;
 }
 @keyframes playSweep { 0%, 58% { left: -70%; } 100% { left: 140%; } }
-#hootPlayBtn:hover {
+#rcPlayBtn:hover {
     filter: brightness(1.05);
     transform: translateY(-2px);
     box-shadow: 0 14px 34px rgba(231,178,62,0.5), inset 0 1px 0 rgba(255,255,255,0.6), 0 0 0 1px rgba(255,220,130,0.7);
     color: #241a06;
 }
-#hootPlayBtn:active {
+#rcPlayBtn:active {
     transform: translateY(1px);
     box-shadow: 0 5px 14px rgba(231,178,62,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
 /* Botões nav secundários */
-.hootNavItem {
+.rcNavItem {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -405,7 +405,7 @@ body::before {
     box-sizing: border-box;
     border-radius: var(--radius);
 }
-.hootNavItem:hover {
+.rcNavItem:hover {
     color: var(--gold);
     background: rgba(231,178,62,0.05);
     border-color: rgba(231,178,62,0.15);
@@ -465,7 +465,7 @@ body::before {
 @keyframes gearSpin { to { transform: rotate(360deg); } }
 
 /* ── Versão e social */
-#hootVersion {
+#rcVersion {
     font-family: 'Cinzel', serif;
     font-size: 9px;
     color: rgba(139,105,20,0.45);
@@ -473,7 +473,7 @@ body::before {
     text-align: center;
 }
 
-#hootSocialIcons {
+#rcSocialIcons {
     margin-top: auto;
     padding-bottom: 18px;
     display: flex;
@@ -481,7 +481,7 @@ body::before {
     gap: 8px;
 }
 
-.hootSocialBtn {
+.rcSocialBtn {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -495,7 +495,7 @@ body::before {
     position: relative;
 }
 .mediaSVG { fill: rgba(139,105,20,0.4); height: 15px; width: 15px; transition: 0.25s ease; }
-.hootSocialBtn:hover .mediaSVG { fill: var(--gold); filter: drop-shadow(0 0 4px rgba(231,178,62,0.5)); }
+.rcSocialBtn:hover .mediaSVG { fill: var(--gold); filter: drop-shadow(0 0 4px rgba(231,178,62,0.5)); }
 
 #settingsTooltip {
     visibility: hidden; opacity: 0;
@@ -511,7 +511,7 @@ body::before {
     z-index: 100;
     letter-spacing: 1px;
 }
-.hootSocialBtn:hover #settingsTooltip { visibility: visible; opacity: 1; }
+.rcSocialBtn:hover #settingsTooltip { visibility: visible; opacity: 1; }
 
 /* ═══════════════════════════════ DASHBOARD PRINCIPAL */
 .dashboard-layout {
@@ -530,7 +530,7 @@ body::before {
 }
 
 /* ── Painéis base (glass moderno) */
-.hoot-panel {
+.rc-panel {
     background: var(--purple-panel);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
@@ -544,13 +544,13 @@ body::before {
     overflow: hidden;
     transition: transform 0.28s cubic-bezier(.2,.8,.2,1), border-color 0.28s ease, box-shadow 0.28s ease;
 }
-.hoot-panel:hover {
+.rc-panel:hover {
     border-color: rgba(231,178,62,0.35);
     box-shadow: 0 18px 46px rgba(0,0,0,0.5), 0 0 0 1px rgba(231,178,62,0.10);
 }
 
 /* Linha dourada topo do painel */
-.hoot-panel::before {
+.rc-panel::before {
     content: '';
     position: absolute;
     top: 0; left: 8%; right: 8%;
@@ -559,7 +559,7 @@ body::before {
 }
 
 /* ── Headers dos painéis */
-.hoot-panel-header, .panel-header {
+.rc-panel-header, .panel-header {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -632,8 +632,8 @@ body::before {
 }
 
 /* ── Painel de notícias */
-#hootNewsPanel { flex: 2; overflow: hidden; }
-#hootNewsList {
+#rcNewsPanel { flex: 2; overflow: hidden; }
+#rcNewsList {
     flex: 1;
     overflow-y: auto;
     padding-right: 4px;
@@ -642,7 +642,7 @@ body::before {
     gap: 8px;
 }
 
-.hoot-news-placeholder {
+.rc-news-placeholder {
     font-family: 'Crimson Pro', serif;
     font-size: 13px;
     color: rgba(122,95,160,0.5);
@@ -697,7 +697,7 @@ body::before {
 }
 
 /* Personagem */
-#hootPlayerArea { position: relative; }
+#rcPlayerArea { position: relative; }
 .char-info { display: flex; gap: 14px; align-items: center; }
 
 .char-avatar {
@@ -750,9 +750,9 @@ body::before {
 }
 
 /* Sistema */
-#hootServerPanel { position: relative; }
+#rcServerPanel { position: relative; }
 
-.hoot-status-row {
+.rc-status-row {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -807,7 +807,7 @@ body::before {
 }
 
 /* ═══════════════════════════════ RODAPÉ / LAUNCH */
-#hootLaunchArea {
+#rcLaunchArea {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1393,10 +1393,10 @@ input[type="range"]::-webkit-slider-thumb {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-.hoot-panel { animation: panelFadeIn 0.4s ease forwards; }
-.hoot-panel:nth-child(1) { animation-delay: 0.05s; }
-.hoot-panel:nth-child(2) { animation-delay: 0.1s; }
-.hoot-panel:nth-child(3) { animation-delay: 0.15s; }
+.rc-panel { animation: panelFadeIn 0.4s ease forwards; }
+.rc-panel:nth-child(1) { animation-delay: 0.05s; }
+.rc-panel:nth-child(2) { animation-delay: 0.1s; }
+.rc-panel:nth-child(3) { animation-delay: 0.15s; }
 
 /* ── Abas de notícias */
 .news-tabs {
@@ -1450,14 +1450,14 @@ input[type="range"]::-webkit-slider-thumb {
     height: 180px;
     display: block;
 }
-#hootNewsPanel {
+#rcNewsPanel {
     flex: 2;
     overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
-#hootNewsList, #hootJournalList {
+#rcNewsList, #rcJournalList {
     flex: 1;
     overflow-y: auto;
     padding-right: 4px;
@@ -1514,14 +1514,14 @@ input[type="range"]::-webkit-slider-thumb {
 /* ═══════════════════════════════ MICRO-INTERAÇÕES / POLISH v4 */
 
 /* Transição suave em tudo que é interativo */
-button, a, .hootNavItem, .news-tab, .settingsNavItem,
+button, a, .rcNavItem, .news-tab, .settingsNavItem,
 input, select, .settingsAuthAccountSelect, .mediaURL {
     transition: transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease,
                 background .22s ease, color .2s ease, border-color .2s ease, filter .2s ease;
 }
 
 /* Feedback de clique (press) — menos no botão JOGAR que tem o seu próprio */
-button:active:not(#hootPlayBtn):not(.frameButton) { transform: translateY(1px) scale(.985); }
+button:active:not(#rcPlayBtn):not(.frameButton) { transform: translateY(1px) scale(.985); }
 
 /* Foco acessível com glow arcano */
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
@@ -1542,16 +1542,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes uiRipple { from { width:0; height:0; opacity:.75; } to { width:280px; height:280px; opacity:0; } }
 
 /* Brilho de foco/hover coeso nos botões secundários */
-.hootNavItem:hover { box-shadow: inset 0 0 0 1px rgba(231,178,62,.18), 0 0 14px rgba(231,178,62,.08); }
+.rcNavItem:hover { box-shadow: inset 0 0 0 1px rgba(231,178,62,.18), 0 0 14px rgba(231,178,62,.08); }
 
 /* Entrada suave dos painéis do dashboard */
-.hoot-panel { animation: panelRise .5s cubic-bezier(.2,.8,.2,1) both; }
-.hoot-panel:nth-child(1){animation-delay:.02s} .hoot-panel:nth-child(2){animation-delay:.08s}
-.hoot-panel:nth-child(3){animation-delay:.14s} .hoot-panel:nth-child(4){animation-delay:.2s}
+.rc-panel { animation: panelRise .5s cubic-bezier(.2,.8,.2,1) both; }
+.rc-panel:nth-child(1){animation-delay:.02s} .rc-panel:nth-child(2){animation-delay:.08s}
+.rc-panel:nth-child(3){animation-delay:.14s} .rc-panel:nth-child(4){animation-delay:.2s}
 @keyframes panelRise { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform:none; } }
 
 /* Título da marca com leve respiro de brilho */
-#hootTitle { animation: titleGlow 4.5s ease-in-out infinite; }
+#rcTitle { animation: titleGlow 4.5s ease-in-out infinite; }
 @keyframes titleGlow {
     0%,100% { text-shadow: 0 0 10px rgba(231,178,62,.25); }
     50%      { text-shadow: 0 0 18px rgba(231,178,62,.5), 0 0 34px rgba(231,178,62,.2); }

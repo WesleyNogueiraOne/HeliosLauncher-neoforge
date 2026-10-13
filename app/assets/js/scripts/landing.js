@@ -1037,77 +1037,73 @@ document.querySelectorAll('.news-tab').forEach(tab => {
         document.querySelectorAll('.news-tab').forEach(t => t.classList.remove('active'))
         tab.classList.add('active')
         const target = tab.getAttribute('data-tab')
-        document.getElementById('hootNewsList').style.display = target === 'news' ? 'flex' : 'none'
-        document.getElementById('hootJournalList').style.display = target === 'journal' ? 'flex' : 'none'
+        document.getElementById('rcNewsList').style.display = target === 'news' ? 'flex' : 'none'
+        document.getElementById('rcJournalList').style.display = target === 'journal' ? 'flex' : 'none'
         if(target === 'journal') loadJournal()
-        if(target === 'news') loadHootNews()
+        if(target === 'news') loadRootNews()
     })
 })
 
-async function loadHootNews() {
-    const list = document.getElementById('hootNewsList')
+// Escapa texto vindo do distribution.json (a janela roda com nodeIntegration,
+// então HTML cru aqui = execução de código no PC do jogador).
+function rcEscape(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c]))
+}
+
+function rcSafeUrl(u) {
+    return typeof u === 'string' && /^https:\/\//i.test(u) ? u : null
+}
+
+function rcYouTubeId(u) {
+    const m = typeof u === 'string' && u.match(/(?:embed\/|v=|youtu\.be\/|shorts\/)([\w-]{11})/)
+    return m ? m[1] : null
+}
+
+function renderFeedEntry(entry) {
+    const image = rcSafeUrl(entry.image)
+    const videoId = rcYouTubeId(entry.video)
+    const meta = [entry.category, entry.date, entry.author].filter(Boolean).map(rcEscape).join(' · ')
+    return `
+        <div class="news-item">
+            ${image ? `<img class="news-item-image" src="${rcEscape(image)}" alt="" data-url="${rcEscape(image)}" data-action="open" loading="lazy">` : ''}
+            ${videoId ? `<div class="news-video-thumb" data-url="https://www.youtube.com/watch?v=${videoId}" data-action="open">
+                <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" alt="" loading="lazy">
+                <div class="news-video-play">▶</div>
+            </div>` : ''}
+            <div class="news-item-title">${rcEscape(entry.title)}</div>
+            <div class="news-item-desc">${rcEscape(entry.content).replace(/\n/g, '<br>')}</div>
+            <div class="news-item-date">${meta}</div>
+        </div>`
+}
+
+async function loadFeed(listId, key, emptyText, errorText) {
+    const list = document.getElementById(listId)
     try {
         const distro = await DistroAPI.getDistribution()
         const raw = distro.rawDistribution || distro
-        if(!raw.news || raw.news.length === 0) {
-            list.innerHTML = '<div class="hoot-news-placeholder">Nenhuma novidade ainda.</div>'
+        const entries = Array.isArray(raw[key]) ? raw[key] : []
+        if(entries.length === 0) {
+            list.innerHTML = `<div class="rc-news-placeholder">${emptyText}</div>`
             return
         }
-        list.innerHTML = raw.news.map(entry => `
-            <div class="news-item">
-                ${entry.image ? `<img class="news-item-image" src="${entry.image}" alt="${entry.title}" data-url="${entry.image}" data-action="open">` : ''}
-                ${entry.video ? `<div class="news-video-thumb" data-url="${entry.video.replace('embed/', 'watch?v=')}" data-action="open">
-                    <img src="https://img.youtube.com/vi/${entry.video.split('/').pop()}/maxresdefault.jpg" alt="video">
-                    <div class="news-video-play">▶</div>
-                </div>` : ''}
-                <div class="news-item-title">${entry.title}</div>
-                <div class="news-item-desc">${entry.content}</div>
-                <div class="news-item-date">${entry.category} · ${entry.date} · ${entry.author}</div>
-            </div>
-        `).join('')
-
+        list.innerHTML = entries.map(renderFeedEntry).join('')
         list.querySelectorAll('[data-action="open"]').forEach(el => {
             el.addEventListener('click', () => {
-                const { shell } = require('electron')
-                shell.openExternal(el.getAttribute('data-url'))
+                const url = rcSafeUrl(el.getAttribute('data-url'))
+                if(url) require('electron').shell.openExternal(url)
             })
         })
     } catch(e) {
-        list.innerHTML = '<div class="hoot-news-placeholder">Erro ao carregar notícias.</div>'
-        console.error('News load error:', e)
+        list.innerHTML = `<div class="rc-news-placeholder">${errorText}</div>`
+        console.error(`Erro ao carregar ${key}:`, e)
     }
 }
 
-async function loadJournal() {
-    const list = document.getElementById('hootJournalList')
-    try {
-        const distro = await DistroAPI.getDistribution()
-        const raw = distro.rawDistribution || distro
-        if(!raw.journal || raw.journal.length === 0) {
-            list.innerHTML = '<div class="hoot-news-placeholder">Nenhuma publicação ainda.</div>'
-            return
-        }
-        list.innerHTML = raw.journal.map(entry => `
-            <div class="news-item">
-                ${entry.image ? `<img class="news-item-image" src="${entry.image}" alt="${entry.title}" data-url="${entry.image}" data-action="open">` : ''}
-                ${entry.video ? `<div class="news-video-thumb" data-url="${entry.video.replace('embed/', 'watch?v=')}" data-action="open">
-                    <img src="https://img.youtube.com/vi/${entry.video.split('/').pop()}/maxresdefault.jpg" alt="video">
-                    <div class="news-video-play">▶</div>
-                </div>` : ''}
-                <div class="news-item-title">${entry.title}</div>
-                <div class="news-item-desc">${entry.content}</div>
-                <div class="news-item-date">${entry.category} · ${entry.date} · ${entry.author}</div>
-            </div>
-        `).join('')
-
-        list.querySelectorAll('[data-action="open"]').forEach(el => {
-            el.addEventListener('click', () => {
-                const { shell } = require('electron')
-                shell.openExternal(el.getAttribute('data-url'))
-            })
-        })
-    } catch(e) {
-        list.innerHTML = '<div class="hoot-news-placeholder">Erro ao carregar jornal.</div>'
-        console.error('Journal load error:', e)
-    }
+function loadRootNews() {
+    return loadFeed('rcNewsList', 'news', 'Nenhuma novidade ainda.', 'Erro ao carregar notícias.')
 }
+
+function loadJournal() {
+    return loadFeed('rcJournalList', 'journal', 'Nenhuma publicação ainda.', 'Erro ao carregar jornal.')
+}
+

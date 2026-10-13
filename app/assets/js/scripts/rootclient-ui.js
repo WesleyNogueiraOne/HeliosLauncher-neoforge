@@ -49,7 +49,7 @@
 
     async function loadTickets() {
         const list = listEl(); if (!list) return
-        list.innerHTML = '<div class="hoot-news-placeholder">Carregando…</div>'
+        list.innerHTML = '<div class="rc-news-placeholder">Carregando…</div>'
         const me = await rc.me().catch(() => null)
         list.innerHTML = ''
         if (!me || me.error) return list.appendChild(vincularCard())

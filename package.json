@@ -5,9 +5,9 @@
   "description": "Root Client - Launcher Root RP",
   "author": "Root RP",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/WesleyNogueiraOne",
+  "homepage": "https://github.com/WesleyNogueiraOne/RootClient",
   "bugs": {
-    "url": "https://github.com/WesleyNogueiraOne"
+    "url": "https://github.com/WesleyNogueiraOne/RootClient/issues"
   },
   "private": true,
   "main": "index.js",
@@ -23,45 +23,6 @@
   },
   "engines": {
     "node": "20.x.x"
-  },
-  "build": {
-    "appId": "com.rootrp.rootclient",
-    "productName": "Root Client",
-    "publish": {
-      "provider": "github",
-      "owner": "WesleyNogueiraOne",
-      "repo": "RootClient"
-    },
-    "win": {
-      "icon": "app/assets/images/logo.ico",
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "Root Client"
-    },
-    "linux": {
-      "icon": "app/assets/images/logo.png",
-      "target": [
-        "AppImage"
-      ]
-    },
-    "mac": {
-      "icon": "app/assets/images/logo.png",
-      "target": [
-        "dmg"
-      ]
-    }
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",

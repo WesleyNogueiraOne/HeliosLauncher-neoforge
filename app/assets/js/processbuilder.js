@@ -143,6 +143,52 @@ class ProcessBuilder {
     }
 
     /**
+     * Extrai um pack (.zip de config/kubejs) pra dentro do gameDir.
+     *
+     * Guarda um manifesto com os arquivos que vieram do pack. Na próxima extração,
+     * arquivos que estavam no pack anterior e saíram do novo são apagados — assim
+     * um script removido do kubejs some também do PC do jogador. Arquivos que o
+     * jogo ou o jogador criaram (nunca vieram no pack) não são tocados.
+     *
+     * @param {string} srcFile Caminho do .zip.
+     * @param {string} extractTo Pasta relativa ao gameDir (ex: 'kubejs').
+     */
+    extractPack(srcFile, extractTo){
+        const destDir = path.resolve(this.gameDir, extractTo)
+        if(!destDir.startsWith(path.resolve(this.gameDir))) {
+            logger.warn('extractTo fora do gameDir, ignorado:', extractTo)
+            return
+        }
+        fs.ensureDirSync(destDir)
+
+        const manifestPath = path.join(this.gameDir, '.rootclient', `pack-${extractTo.replace(/[^\w-]/g, '_')}.json`)
+        let previous = []
+        try { previous = fs.readJsonSync(manifestPath) } catch(e) { /* primeira extração */ }
+
+        const zip = new AdmZip(srcFile)
+        const current = zip.getEntries()
+            .filter(e => !e.isDirectory)
+            .map(e => e.entryName.replace(/\\/g, '/'))
+
+        const keep = new Set(current)
+        for(const rel of previous) {
+            if(keep.has(rel)) continue
+            const abs = path.resolve(destDir, rel)
+            if(!abs.startsWith(destDir + path.sep)) continue
+            try {
+                fs.removeSync(abs)
+                logger.info('Removido do pack:', path.join(extractTo, rel))
+            } catch(e) {
+                logger.warn('Falha ao remover arquivo antigo do pack:', abs, e)
+            }
+        }
+
+        zip.extractAllTo(destDir, true)
+        fs.outputJsonSync(manifestPath, current)
+        logger.info('Pack extraído:', srcFile, '->', destDir, `(${current.length} arquivos)`)
+    }
+
+    /**
      * Convienence method to run the functions typically used to build a process.
      */
     build(){
@@ -156,11 +202,7 @@ class ProcessBuilder {
             if(!extractTo) continue
             
             if(srcFile.endsWith('.zip')) {
-                const destDir = path.join(this.gameDir, extractTo)
-                fs.ensureDirSync(destDir)
-                const zip = new AdmZip(srcFile)
-                zip.extractAllTo(destDir, true)
-                logger.info('Extracted zip:', srcFile, '->', destDir)
+                this.extractPack(srcFile, extractTo)
             }
         }
     }
@@ -494,7 +536,7 @@ class ProcessBuilder {
 
         // Java Arguments
         if(process.platform === 'darwin'){
-            args.push('-Xdock:name=HeliosLauncher')
+            args.push('-Xdock:name=Root Client')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
         args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
@@ -541,11 +583,10 @@ class ProcessBuilder {
             }
         }
 
-        //args.push('-Dlog4j.configurationFile=D:\\WesterosCraft\\game\\common\\assets\\log_configs\\client-1.12.xml')
 
         // Java Arguments
         if(process.platform === 'darwin'){
-            args.push('-Xdock:name=HeliosLauncher')
+            args.push('-Xdock:name=Root Client')
             args.push('-Xdock:icon=' + path.join(__dirname, '..', 'images', 'minecraft.icns'))
         }
         args.push('-Xmx' + ConfigManager.getMaxRAM(this.server.rawServer.id))
@@ -647,7 +688,7 @@ class ProcessBuilder {
                             val = args[i].replace(argDiscovery, tempNativePath)
                             break
                         case 'launcher_name':
-                            val = args[i].replace(argDiscovery, 'Helios-Launcher')
+                            val = args[i].replace(argDiscovery, 'Root-Client')
                             break
                         case 'launcher_version':
                             val = args[i].replace(argDiscovery, this.launcherVersion)

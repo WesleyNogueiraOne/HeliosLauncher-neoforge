@@ -13,7 +13,7 @@ publish:
   repo: 'RootClient'
 
 files:
-  - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,.eslintrc.json}'
+  - '!{dist,.gitignore,.vscode,.github,docs,patches,README.md,dev-app-update.yml,.nvmrc,.eslintrc.json,.eslintignore,*.log}'
 
 extraResources:
   - 'libraries'

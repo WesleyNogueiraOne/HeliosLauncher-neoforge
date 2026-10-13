@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    ROOT CLIENT — REDESIGN v5 (layout imersivo)
    Fundo cinematográfico + marca + herói + trilho de notícias + dock
-   Carregado depois do hoot-theme-v2.css (paleta/tokens vêm de lá).
+   Carregado depois do theme.css (paleta/tokens vêm de lá).
    ═══════════════════════════════════════════════════════════════ */
 
 /* NÃO forçar display aqui — o uibinder controla a exibição das views.
@@ -22,10 +22,10 @@
 
 /* ── Redes sociais (rail esquerdo) */
 #rcSocial { position:absolute; left:20px; bottom:122px; z-index:7; display:flex; flex-direction:column; gap:9px; }
-#rcSocial .hootSocialBtn { width:38px; height:38px; border-radius:11px; background:var(--purple-panel); backdrop-filter:var(--glass-blur); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; transition:transform .2s cubic-bezier(.2,.8,.2,1), border-color .2s, box-shadow .2s; }
-#rcSocial .hootSocialBtn:hover { border-color:rgba(231,178,62,.5) !important; transform:translateX(3px); box-shadow:0 0 16px rgba(231,178,62,.15); opacity:1 !important; }
+#rcSocial .rcSocialBtn { width:38px; height:38px; border-radius:11px; background:var(--purple-panel); backdrop-filter:var(--glass-blur); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; transition:transform .2s cubic-bezier(.2,.8,.2,1), border-color .2s, box-shadow .2s; }
+#rcSocial .rcSocialBtn:hover { border-color:rgba(231,178,62,.5) !important; transform:translateX(3px); box-shadow:0 0 16px rgba(231,178,62,.15); opacity:1 !important; }
 #rcSocial .mediaSVG { width:16px; height:16px; fill:var(--muted); transition:fill .2s; }
-#rcSocial .hootSocialBtn:hover .mediaSVG { fill:var(--gold-shine); }
+#rcSocial .rcSocialBtn:hover .mediaSVG { fill:var(--gold-shine); }
 
 /* ── Palco (grid) */
 #rcStage {
@@ -67,9 +67,9 @@
 #rcNews .news-tab.active { background:rgba(231,178,62,.14); color:var(--gold-shine); }
 #rcNews .news-tab:hover:not(.active) { color:var(--parchment); background:rgba(255,255,255,.04); }
 #rcNews .news-list { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; padding-right:3px; }
-#rcNews .hoot-news-placeholder { color:var(--muted); font-size:13px; text-align:center; padding:24px 10px; }
+#rcNews .rc-news-placeholder { color:var(--muted); font-size:13px; text-align:center; padding:24px 10px; }
 
-/* Cards de notícia (renderizados por loadHootNews) */
+/* Cards de notícia (renderizados por loadNews) */
 #rcNews .news-item { background:var(--purple-panel); backdrop-filter:var(--glass-blur); border:1px solid var(--line); border-radius:14px; overflow:hidden; cursor:pointer; transition:transform .26s cubic-bezier(.2,.8,.2,1), border-color .26s, box-shadow .26s; }
 #rcNews .news-item:hover { transform:translateY(-3px); border-color:rgba(231,178,62,.4); box-shadow:0 16px 40px rgba(0,0,0,.5); }
 #rcNews .news-item-image { width:100%; height:104px; object-fit:cover; display:block; }
@@ -261,3 +261,6 @@
 }
 /* Anel dourado girando em volta */
 #loadSpinnerImage { width: 232px !important; height: 232px !important; z-index: 400 !important; }
+
+/* Link social sem URL configurada (_custom.toml) */
+#rcSocial .rcSocialBtn.rc-disabled { pointer-events:none; opacity:.3; }

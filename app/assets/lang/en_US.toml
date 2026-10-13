@@ -192,7 +192,7 @@ javaDownloadPrepare = "Preparando Download do Java.."
 javaDownloadFailureTitle = "Erro ao Baixar Java"
 javaDownloadFailureText = "Veja o console (CTRL + Shift + i) para mais detalhes."
 javaRequired = "Java é Necessário<br>para Iniciar"
-javaRequiredMessage = 'Uma instalação x64 válida do Java {major} é necessária para iniciar.<br><br>Consulte nosso <a href="https://github.com/dscalzi/HeliosLauncher/wiki/Java-Management#manually-installing-a-valid-version-of-java">Guia de Gerenciamento Java</a> para instruções.'
+javaRequiredMessage = 'Uma instalação x64 válida do Java {major} é necessária para iniciar.<br><br>Instale o Java {major} (Eclipse Adoptium/Temurin) ou deixe o Root Client baixar automaticamente.'
 javaRequiredDismiss = "Entendi"
 javaRequiredCancel = "Voltar"
 
