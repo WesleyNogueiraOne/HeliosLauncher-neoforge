@@ -211,11 +211,11 @@ class ProcessBuilder {
     }
 
     /**
-     * Copia os mods Fabric (rodados pelo Sinytra Connector) pra gameDir/mods.
+     * Copia os mods Fabric e jars de serviço (Sinytra Connector) pra gameDir/mods.
      * Guarda quais arquivos foram colocados pelo launcher, pra tirar os que saíram
      * do distro sem tocar em mods que o jogador colocou na pasta.
      *
-     * @param {Array.<Object>} fabricMods Módulos do tipo FabricMod habilitados.
+     * @param {Array.<Object>} fabricMods Módulos FabricMod/placeInMods habilitados.
      */
     syncConnectorMods(fabricMods){
         const modsDir = path.join(this.gameDir, 'mods')
@@ -233,7 +233,7 @@ class ProcessBuilder {
             const st = fs.existsSync(dest) ? fs.statSync(dest) : null
             if(!st || st.size !== fs.statSync(src).size){
                 fs.copySync(src, dest)
-                logger.info('Mod Fabric (Connector):', name)
+                logger.info('Mod na pasta mods/ (Connector):', name)
             }
         }
         for(const name of previous){
@@ -271,11 +271,14 @@ class ProcessBuilder {
         logger.info('Using fabric loader:', this.usingFabricLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.rawServer.id).mods, this.server.modules)
 
-        // Mods Fabric num servidor NeoForge (via Sinytra Connector): o Connector só
-        // acha jars Fabric na pasta mods/ da instância, não pela lista do FML.
+        // Vão pra pasta mods/ da instância, fora da lista do FML:
+        //  - mods Fabric (o Sinytra Connector só acha eles lá);
+        //  - jars de serviço do FML (placeInMods, ex: o próprio Connector) — o FML
+        //    só carrega locators/transformers da pasta mods/.
         if(!this.usingFabricLoader){
-            this.syncConnectorMods(modObj.fMods.filter(m => m.rawModule.type === Type.FabricMod))
-            modObj.fMods = modObj.fMods.filter(m => m.rawModule.type !== Type.FabricMod)
+            const inModsFolder = (m) => m.rawModule.type === Type.FabricMod || m.rawModule.placeInMods === true
+            this.syncConnectorMods(modObj.fMods.filter(inModsFolder))
+            modObj.fMods = modObj.fMods.filter(m => !inModsFolder(m))
         }
         
         // Mod list below 1.13
