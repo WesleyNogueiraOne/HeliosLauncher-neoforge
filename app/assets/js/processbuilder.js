@@ -211,6 +211,40 @@ class ProcessBuilder {
     }
 
     /**
+     * Copia os mods Fabric (rodados pelo Sinytra Connector) pra gameDir/mods.
+     * Guarda quais arquivos foram colocados pelo launcher, pra tirar os que saíram
+     * do distro sem tocar em mods que o jogador colocou na pasta.
+     *
+     * @param {Array.<Object>} fabricMods Módulos do tipo FabricMod habilitados.
+     */
+    syncConnectorMods(fabricMods){
+        const modsDir = path.join(this.gameDir, 'mods')
+        const manifestPath = path.join(this.gameDir, '.rootclient', 'connector-mods.json')
+        let previous = []
+        try { previous = fs.readJsonSync(manifestPath) } catch(e) { /* primeira vez */ }
+
+        const current = []
+        if(fabricMods.length) fs.ensureDirSync(modsDir)
+        for(const mdl of fabricMods){
+            const src = mdl.getPath()
+            const name = path.basename(src)
+            const dest = path.join(modsDir, name)
+            current.push(name)
+            const st = fs.existsSync(dest) ? fs.statSync(dest) : null
+            if(!st || st.size !== fs.statSync(src).size){
+                fs.copySync(src, dest)
+                logger.info('Mod Fabric (Connector):', name)
+            }
+        }
+        for(const name of previous){
+            if(current.includes(name)) continue
+            const p = path.join(modsDir, path.basename(name))
+            try { fs.removeSync(p); logger.info('Mod Fabric removido:', name) } catch(e) { logger.warn('Falha ao remover', p, e) }
+        }
+        fs.outputJsonSync(manifestPath, current)
+    }
+
+    /**
      * Convienence method to run the functions typically used to build a process.
      */
     build(){
@@ -236,6 +270,13 @@ class ProcessBuilder {
         this.usingFabricLoader = this.server.modules.some(mdl => mdl.rawModule.type === Type.Fabric)
         logger.info('Using fabric loader:', this.usingFabricLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.rawServer.id).mods, this.server.modules)
+
+        // Mods Fabric num servidor NeoForge (via Sinytra Connector): o Connector só
+        // acha jars Fabric na pasta mods/ da instância, não pela lista do FML.
+        if(!this.usingFabricLoader){
+            this.syncConnectorMods(modObj.fMods.filter(m => m.rawModule.type === Type.FabricMod))
+            modObj.fMods = modObj.fMods.filter(m => m.rawModule.type !== Type.FabricMod)
+        }
         
         // Mod list below 1.13
         // Fabric only supports 1.14+

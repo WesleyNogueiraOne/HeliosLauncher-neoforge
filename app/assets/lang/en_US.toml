@@ -45,8 +45,8 @@ offlineBackButton = "Voltar"
 cancelButton = "Cancelar"
 
 [ejs.overlay]
-serverSelectHeader = "Servidores Disponíveis"
-serverSelectConfirm = "Selecionar"
+serverSelectHeader = "Escolha a versão"
+serverSelectConfirm = "Usar esta versão"
 serverSelectCancel = "Cancelar"
 accountSelectHeader = "Selecionar uma Conta"
 accountSelectConfirm = "Selecionar"
