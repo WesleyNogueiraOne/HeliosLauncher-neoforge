@@ -628,6 +628,10 @@ async function dlAsync(login = true) {
 
             // Build Minecraft process.
             proc = pb.build()
+            if(window.rcBackground){
+                window.rcBackground.setGameRunning(true)
+                proc.on('close', () => window.rcBackground.setGameRunning(false))
+            }
 
             // Bind listeners to stdout.
             proc.stdout.on('data', tempListener)

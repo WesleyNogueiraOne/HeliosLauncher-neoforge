@@ -347,3 +347,18 @@
 .rcBtnPrimary:disabled { filter:grayscale(.4) brightness(.8); cursor:wait; }
 .rcBtnGhost { border:none; background:transparent; color:var(--purple-text); font-weight:500; height:36px; }
 .rcBtnGhost:hover { color:var(--parchment); }
+
+/* ───── Fundo em vídeo ───── */
+#bgSlideshow { background:#0b0c10; }
+#bgSlideshow .bgVideo {
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0; transition:opacity 1.2s ease; pointer-events:none;
+}
+#bgSlideshow.video-ready .bgVideo { opacity:1; }
+#bgSlideshow .bgShade {
+    position:absolute; inset:0; pointer-events:none; z-index:1;
+    background:
+        linear-gradient(to right, rgba(11,12,16,.88) 0%, rgba(11,12,16,.55) 26%, rgba(11,12,16,.2) 55%, rgba(11,12,16,.5) 100%),
+        linear-gradient(to top, rgba(11,12,16,.75) 0%, transparent 42%);
+}
+#bgSlideshow .bgSlide::after { display:none; }

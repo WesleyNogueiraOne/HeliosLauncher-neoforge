@@ -2,7 +2,8 @@
 // Root Client — fundo animado + ligações da landing
 // ============================================================
 
-// Slideshow de fundo
+// Fundo: vídeo em loop. Se o vídeo falhar, cai pro slideshow de imagens.
+const BG_VIDEO = 'assets/video/background.mp4'
 const bgImages = [
     'assets/images/backgrounds/0.jpg',
     'assets/images/backgrounds/1.jpg',
@@ -11,23 +12,61 @@ const bgImages = [
 
 const bgSlideshow = document.createElement('div')
 bgSlideshow.id = 'bgSlideshow'
-bgImages.forEach((src, i) => {
-    const slide = document.createElement('div')
-    slide.className = 'bgSlide' + (i === 0 ? ' active' : '')
-    slide.style.backgroundImage = `url('${src}')`
-    bgSlideshow.appendChild(slide)
-})
 
-// Alternar slides (pausa quando a janela não está visível)
-let currentSlide = 0
-setInterval(() => {
-    if (document.hidden) return
-    const slides = document.querySelectorAll('.bgSlide')
-    if (!slides.length) return
-    slides[currentSlide].classList.remove('active')
-    currentSlide = (currentSlide + 1) % slides.length
-    slides[currentSlide].classList.add('active')
-}, 8000)
+const bgVideo = document.createElement('video')
+bgVideo.className = 'bgVideo'
+bgVideo.muted = true
+bgVideo.loop = true
+bgVideo.autoplay = true
+bgVideo.playsInline = true
+bgVideo.preload = 'auto'
+bgVideo.setAttribute('aria-hidden', 'true')
+bgVideo.addEventListener('playing', () => bgSlideshow.classList.add('video-ready'), { once: true })
+bgVideo.addEventListener('error', startSlideshow, { once: true })
+bgSlideshow.appendChild(bgVideo)
+
+// O file:// passa pelo ejs-electron, que não responde Range — o Chromium não toca
+// vídeo assim. Lê o arquivo e toca via Blob URL.
+require('fs').promises.readFile(require('path').join(__dirname, BG_VIDEO))
+    .then(buf => { bgVideo.src = window.URL.createObjectURL(new Blob([buf], { type: 'video/mp4' })) })
+    .catch(startSlideshow)
+
+const bgShade = document.createElement('div')
+bgShade.className = 'bgShade'
+bgSlideshow.appendChild(bgShade)
+
+let slideTimer = null
+function startSlideshow(){
+    if(slideTimer) return
+    bgVideo.remove()
+    bgImages.forEach((src, i) => {
+        const slide = document.createElement('div')
+        slide.className = 'bgSlide' + (i === 0 ? ' active' : '')
+        slide.style.backgroundImage = `url('${src}')`
+        bgSlideshow.insertBefore(slide, bgShade)
+    })
+    let current = 0
+    slideTimer = setInterval(() => {
+        if (document.hidden) return
+        const slides = bgSlideshow.querySelectorAll('.bgSlide')
+        slides[current].classList.remove('active')
+        current = (current + 1) % slides.length
+        slides[current].classList.add('active')
+    }, 8000)
+}
+
+// Pausa o vídeo quando não dá pra ver (minimizado) ou com o jogo aberto,
+// pra não gastar CPU/GPU que o Minecraft precisa.
+let bgGameRunning = false
+function syncBackgroundPlayback(){
+    if(!bgVideo.isConnected) return
+    if(document.hidden || bgGameRunning) bgVideo.pause()
+    else bgVideo.play().catch(() => {})
+}
+document.addEventListener('visibilitychange', syncBackgroundPlayback)
+window.rcBackground = {
+    setGameRunning(running){ bgGameRunning = !!running; syncBackgroundPlayback() }
+}
 
 // Runas decorativas
 const bgRunes = document.createElement('div')
