@@ -20,6 +20,6 @@ sourceGithubLink = "https://github.com/WesleyNogueiraOne/RootClient"
 supportLink = "https://rootrp-site.vercel.app"
 
 [ejs.welcome]
-welcomeHeader = "BEM-VINDO A NOCTUMBRIA"
-welcomeDescription = "Muito além das fronteiras conhecidas, ergue-se Noctumbria — um continente onde a magia arcana e o engenho a vapor se entrelaçam. Aqui, feiticeiros forjam runas em bigornas de latão, cidades flutuam sobre cristais de aurora e antigos segredos aguardam nas ruínas do Antigo Reino. Escolha sua origem, domine sua arte e deixe sua marca nas crônicas de Noctumbria. Um mundo vivo, moldado pela comunidade do Root RP, é seu para explorar."
-welcomeDescCTA = "Você está a poucos cliques de Noctumbria."
+welcomeHeader = "BEM-VINDO A SELENIA"
+welcomeDescription = "Muito além das fronteiras conhecidas, ergue-se Selenia — um continente onde a magia arcana e o engenho a vapor se entrelaçam. Aqui, feiticeiros forjam runas em bigornas de latão, cidades flutuam sobre cristais de aurora e antigos segredos aguardam nas ruínas do Antigo Reino. Escolha sua origem, domine sua arte e deixe sua marca nas crônicas de Selenia. Um mundo vivo, moldado pela comunidade do Root RP, é seu para explorar."
+welcomeDescCTA = "Você está a poucos cliques de Selenia."
