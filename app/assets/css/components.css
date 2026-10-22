@@ -1,0 +1,315 @@
+/* ═══════════════════════════════════════════════════════════════
+   ROOT CLIENT · COMPONENTES
+   Linguagem visual do site: botão ouro com brilho, ghost teal,
+   card de moldura dupla, eyebrow com losango.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════ BOTÕES */
+.rc-btn-gold, .rc-btn-ghost {
+    position: relative; overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; padding: 0 20px;
+    border-radius: var(--r-pill);
+    font-family: var(--font-ui); font-size: 13px; font-weight: 600; letter-spacing: .01em;
+    white-space: nowrap;
+    transition: transform .18s var(--ease-out), box-shadow .18s, filter .18s, background .18s, border-color .18s, color .18s;
+}
+.rc-btn-gold {
+    border: none;
+    background: linear-gradient(180deg, var(--gold-soft), var(--gold) 62%, var(--gold-deep));
+    color: var(--on-gold);
+    font-weight: 700;
+    box-shadow: var(--glow-gold);
+}
+.rc-btn-gold:hover:not(:disabled) {
+    filter: brightness(1.04) saturate(1.05);
+    transform: translateY(-1.5px);
+    box-shadow: 0 0 0 1px #eab94d33, 0 18px 46px -14px #eab94d99;
+}
+.rc-btn-gold:active:not(:disabled) { transform: translateY(0) scale(.985); }
+.rc-btn-ghost {
+    border: 1px solid var(--border-strong);
+    background: #ffffff04;
+    color: var(--text);
+}
+.rc-btn-ghost:hover:not(:disabled) { border-color: var(--teal); background: #5fcdbd17; }
+.rc-btn-ghost:active:not(:disabled) { transform: scale(.985); }
+.rc-btn-gold::before, .rc-btn-ghost::before {
+    content: ""; pointer-events: none;
+    position: absolute; top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(100deg, transparent, #ffffff59, transparent);
+    transform: skew(-18deg);
+    transition: left .6s var(--ease-out);
+}
+.rc-btn-ghost::before { background: linear-gradient(100deg, transparent, #5fcdbd38, transparent); }
+.rc-btn-gold:hover:not(:disabled)::before, .rc-btn-ghost:hover:not(:disabled)::before { left: 130%; }
+.rc-btn-gold:disabled, .rc-btn-ghost:disabled { opacity: .5; cursor: not-allowed; filter: grayscale(.4); box-shadow: none; }
+.rc-btn-sm { height: 32px; padding: 0 14px; font-size: 12px; }
+.rc-btn-danger:hover:not(:disabled) { border-color: var(--danger); background: #ff656814; color: var(--danger-soft); }
+
+.rc-icon-btn {
+    width: 36px; height: 36px; flex: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: #ffffff04;
+    color: var(--muted);
+    transition: color .18s, border-color .18s, background .18s;
+}
+.rc-icon-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.rc-icon-btn:hover { color: var(--text); border-color: var(--border-strong); background: #ffffff0a; }
+
+.rc-link {
+    background: none; border: none; padding: 0;
+    color: var(--muted); font-size: 12px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: color .18s;
+}
+.rc-link:hover { color: var(--teal-soft); }
+
+/* ═══════════════════════════════ CARD (moldura dupla) */
+.rc-card {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: var(--r-module);
+    background: linear-gradient(#172220eb, #10191be6);
+    box-shadow: inset 0 1px #ffffff08, 0 18px 48px -30px #0009;
+    transition: border-color .25s, box-shadow .25s;
+}
+.rc-card::after {
+    content: ""; pointer-events: none;
+    position: absolute; inset: 7px;
+    border: 1px solid #c98a3f1c;
+    border-radius: var(--r-inner);
+    transition: border-color .25s;
+}
+.rc-card:hover::after { border-color: #c98a3f33; }
+.rc-card--glow::before {
+    content: ""; pointer-events: none;
+    position: absolute; inset: 0 0 auto; height: 1px;
+    background: linear-gradient(90deg, transparent, #eab94d80, transparent);
+}
+.rc-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--r-inner);
+    background: #ffffff05;
+}
+
+/* Cantoneiras de HUD */
+.rc-hud { --hc: #c98a3f66; }
+.rc-hud > .rc-hud-corners { position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    background:
+        linear-gradient(var(--hc), var(--hc)) top 0 left 0 / 10px 1px,
+        linear-gradient(var(--hc), var(--hc)) top 0 left 0 / 1px 10px,
+        linear-gradient(var(--hc), var(--hc)) top 0 right 0 / 10px 1px,
+        linear-gradient(var(--hc), var(--hc)) top 0 right 0 / 1px 10px,
+        linear-gradient(var(--hc), var(--hc)) bottom 0 left 0 / 10px 1px,
+        linear-gradient(var(--hc), var(--hc)) bottom 0 left 0 / 1px 10px,
+        linear-gradient(var(--hc), var(--hc)) bottom 0 right 0 / 10px 1px,
+        linear-gradient(var(--hc), var(--hc)) bottom 0 right 0 / 1px 10px;
+    background-repeat: no-repeat;
+}
+
+/* ═══════════════════════════════ EYEBROW */
+.rc-eyebrow {
+    display: inline-flex; align-items: center; gap: .55rem;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: .26em; text-transform: uppercase;
+    color: var(--teal);
+}
+.rc-eyebrow::before {
+    content: ""; flex: none;
+    width: 8px; height: 8px;
+    border: 1px solid var(--gold);
+    background: color-mix(in srgb, var(--gold) 28%, transparent);
+    transform: rotate(45deg);
+}
+.rc-eyebrow--plain::before { display: none; }
+
+/* ═══════════════════════════════ CHIPS / CARIMBOS */
+.rc-chip {
+    --c: var(--muted);
+    display: inline-flex; align-items: center; gap: 5px;
+    height: 20px; padding: 0 8px;
+    border-radius: var(--r-pill);
+    border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+    background: color-mix(in srgb, var(--c) 10%, transparent);
+    color: var(--c);
+    font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    white-space: nowrap;
+}
+.rc-chip--gold   { --c: var(--gold-soft); }
+.rc-chip--teal   { --c: var(--teal); }
+.rc-chip--arcane { --c: var(--arcane-soft); }
+.rc-chip--leaf   { --c: var(--leaf); }
+.rc-chip--danger { --c: var(--danger); }
+.rc-chip--lore   { --c: var(--text); font-style: italic; letter-spacing: .08em; text-transform: none; font-family: var(--font-display); font-size: 11px; }
+
+/* ═══════════════════════════════ ABAS */
+.rc-tabs { display: flex; gap: 4px; }
+.rc-tab {
+    position: relative;
+    background: none; border: none;
+    height: 32px; padding: 0 12px;
+    border-radius: var(--r-pill);
+    color: var(--muted);
+    font-size: 12px; font-weight: 600; letter-spacing: .04em;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: color .18s, background .18s;
+}
+.rc-tab:hover { color: var(--text); background: #ffffff08; }
+.rc-tab.active, .rc-tab[selected] { color: var(--gold-soft); background: #c98a3f14; }
+.rc-tab.active::after, .rc-tab[selected]::after {
+    content: ""; position: absolute; left: 12px; right: 12px; bottom: 3px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.rc-badge {
+    min-width: 16px; height: 16px; padding: 0 4px;
+    border-radius: var(--r-pill);
+    background: var(--danger); color: #fff;
+    font-size: 10px; line-height: 16px; text-align: center; font-weight: 700;
+}
+
+/* ═══════════════════════════════ INPUTS */
+.rc-input,
+#settingsContainer input[type="text"],
+#settingsContainer input[type="number"] {
+    height: 40px; padding: 0 14px;
+    border-radius: var(--r-inner);
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 13px;
+    transition: border-color .18s, box-shadow .18s;
+}
+.rc-input:focus,
+#settingsContainer input[type="text"]:focus,
+#settingsContainer input[type="number"]:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px #5fb0a826; }
+.rc-input::placeholder { color: var(--muted-2); }
+.rc-input.rcInputError, input[error] { border-color: var(--danger) !important; box-shadow: 0 0 0 3px #ff656820 !important; }
+.rc-input.rcInputError::placeholder { color: var(--danger-soft); }
+input:disabled { opacity: .75; cursor: default; }
+input[type="number"]::-webkit-inner-spin-button { opacity: .4; }
+
+/* ═══════════════════════════════ TOGGLE (estrutura do Helios: label.toggleSwitch > input + span) */
+.toggleSwitch { position: relative; display: inline-block; width: 38px; height: 22px; flex: none; }
+.toggleSwitch input { opacity: 0; width: 0; height: 0; }
+.toggleSwitchSlider {
+    position: absolute; inset: 0; cursor: pointer;
+    background: var(--panel-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    transition: background .18s, border-color .18s;
+}
+.toggleSwitchSlider::before {
+    content: ""; position: absolute;
+    width: 14px; height: 14px; left: 3px; top: 3px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: transform .18s var(--ease-out), background .18s;
+}
+.toggleSwitch input:checked + .toggleSwitchSlider { background: #6fbf7333; border-color: #6fbf7399; }
+.toggleSwitch input:checked + .toggleSwitchSlider::before { transform: translateX(16px); background: var(--leaf); }
+.toggleSwitch input:focus-visible + .toggleSwitchSlider { box-shadow: 0 0 0 3px #5fb0a840; }
+.toggleSwitch[reqmod] .toggleSwitchSlider { cursor: not-allowed; opacity: .55; }
+
+/* ═══════════════════════════════ SLIDER (estrutura do Helios: .rangeSlider > .rangeSliderBar + .rangeSliderTrack) */
+.rangeSlider {
+    position: relative; flex: 1;
+    height: 6px; margin: 10px 0;
+    border-radius: var(--r-pill);
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+}
+.rangeSliderBar {
+    position: absolute; left: 0; top: -1px; bottom: -1px;
+    border-radius: var(--r-pill);
+    background: linear-gradient(90deg, var(--gold-deep), var(--gold), var(--gold-soft));
+    pointer-events: none;
+}
+.rangeSliderTrack {
+    position: absolute; top: 50%;
+    width: 16px; height: 16px;
+    margin-left: -8px; margin-top: -8px;
+    border-radius: 50%;
+    background: var(--text);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 0 4px #c98a3f26;
+    cursor: grab;
+    transition: box-shadow .18s;
+}
+.rangeSliderTrack:hover { box-shadow: 0 0 0 6px #c98a3f33; }
+.rangeSliderTrack:active { cursor: grabbing; }
+
+/* ═══════════════════════════════ SPINNER */
+.rc-spinner {
+    width: 16px; height: 16px; flex: none;
+    border-radius: 50%;
+    border: 2px solid #ffffff1a;
+    border-top-color: var(--gold-soft);
+    animation: rcSpin .8s linear infinite;
+}
+@keyframes rcSpin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════ ESTADOS VAZIOS */
+.rc-empty, .rc-news-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    padding: 32px 16px;
+    color: var(--muted); font-size: 13px; text-align: center;
+}
+.rc-empty b { font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--text); }
+
+/* ═══════════════════════════════ TOOLTIP (moldura de tooltip do Minecraft, paleta do site) */
+[data-tip] { position: relative; }
+[data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute; left: 50%; bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    padding: 5px 8px;
+    border-radius: var(--r-tip);
+    background: #100a1af2;
+    border: 1px solid #8b7bd680;
+    box-shadow: inset 0 0 0 1px #000, 0 8px 20px #0008;
+    color: var(--text);
+    font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none;
+    white-space: nowrap;
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* ═══════════════════════════════ TOAST (estilo conquista) */
+#rcToasts {
+    position: fixed; right: 20px; bottom: 28px; z-index: 600;
+    display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+    pointer-events: none;
+}
+.rc-toast {
+    pointer-events: auto;
+    display: flex; align-items: center; gap: 12px;
+    width: 300px; padding: 10px 14px 10px 10px;
+    border-radius: var(--r-inner);
+    background: var(--glass-strong);
+    backdrop-filter: var(--blur);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-lg);
+    animation: rcToastIn .26s var(--ease-out) both;
+}
+.rc-toast.out { animation: rcToastOut .22s ease-in both; }
+.rc-toast-icon {
+    width: 34px; height: 34px; flex: none;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: #c98a3f1f; color: var(--gold-soft); border: 1px solid #c98a3f40;
+    font-size: 15px;
+}
+.rc-toast-body { min-width: 0; }
+.rc-toast-title { font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-soft); }
+.rc-toast-text { font-size: 13px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@keyframes rcToastIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+@keyframes rcToastOut { to { opacity: 0; transform: translateX(24px); } }
+
+/* ═══════════════════════════════ TÍTULOS DE SEÇÃO */
+.rc-section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.rc-divider { height: 1px; background: var(--border); border: none; margin: 14px 0; }
+body:has(#launch_details[style*="flex"]) #rcToasts { bottom: 76px; }

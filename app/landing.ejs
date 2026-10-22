@@ -1,198 +1,155 @@
 <div id="landingContainer" style="display: none;">
+    <div id="rcDesk">
 
-    <!-- ══════════ Marca (canto superior esquerdo) ══════════ -->
-    <div id="rcBrand">
-        <div id="image_seal_container">
-            <img id="image_seal" src="assets/images/logo.png"/>
-            <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
-        </div>
-        <div id="rcBrandText">
-            <span class="rc-brand-name">ROOT CLIENT</span>
-            <span class="rc-brand-sub">Root RP</span>
-        </div>
-    </div>
-
-    <!-- ══════════ Redes sociais (rail lateral) ══════════ -->
-    <div id="rcSocial">
-        <% const mediaDiscordURL_ = lang('landing.mediaDiscordURL') %><a href="<%= mediaDiscordURL_ || '#' %>" class="mediaURL rcSocialBtn<%= (!mediaDiscordURL_ || mediaDiscordURL_ === '#') ? ' rc-disabled' : '' %>" title="Discord">
-            <svg class="mediaSVG" viewBox="35.34 34.3575 70.68 68.71500">
-                <path d="M81.23,78.48a6.14,6.14,0,1,1,6.14-6.14,6.14,6.14,0,0,1-6.14,6.14M60,78.48a6.14,6.14,0,1,1,6.14-6.14A6.14,6.14,0,0,1,60,78.48M104.41,73c-.92-7.7-8.24-22.9-8.24-22.9A43,43,0,0,0,88,45.59a17.88,17.88,0,0,0-8.38-1.27l-.13,1.06a23.52,23.52,0,0,1,5.8,1.95,87.59,87.59,0,0,1,8.17,4.87s-10.32-5.63-22.27-5.63a51.32,51.32,0,0,0-23.2,5.63,87.84,87.84,0,0,1,8.17-4.87,23.57,23.57,0,0,1,5.8-1.95l-.13-1.06a17.88,17.88,0,0,0-8.38,1.27,42.84,42.84,0,0,0-8.21,4.56S37.87,65.35,37,73s-.37,11.54-.37,11.54,4.22,5.68,9.9,7.14,7.7,1.47,7.7,1.47l3.75-4.68a21.22,21.22,0,0,1-4.65-2A24.47,24.47,0,0,1,47.93,82S61.16,88.4,70.68,88.4c10,0,22.75-6.44,22.75-6.44a24.56,24.56,0,0,1-5.35,4.56,21.22,21.22,0,0,1-4.65,2l3.75,4.68s2,0,7.7-1.47,9.89-7.14,9.89-7.14.55-3.85-.37-11.54"/>
-            </svg>
-        </a>
-        <% const mediaYouTubeURL_ = lang('landing.mediaYouTubeURL') %><a href="<%= mediaYouTubeURL_ || '#' %>" class="mediaURL rcSocialBtn<%= (!mediaYouTubeURL_ || mediaYouTubeURL_ === '#') ? ' rc-disabled' : '' %>" title="YouTube">
-            <svg class="mediaSVG" viewBox="0 0 24 24">
-                <path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>
-            </svg>
-        </a>
-        <% const mediaInstagramURL_ = lang('landing.mediaInstagramURL') %><a href="<%= mediaInstagramURL_ || '#' %>" class="mediaURL rcSocialBtn<%= (!mediaInstagramURL_ || mediaInstagramURL_ === '#') ? ' rc-disabled' : '' %>" title="Instagram">
-            <svg class="mediaSVG" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-            </svg>
-        </a>
-        <% const mediaTikTokURL_ = lang('landing.mediaTikTokURL') %><a href="<%= mediaTikTokURL_ || '#' %>" class="mediaURL rcSocialBtn<%= (!mediaTikTokURL_ || mediaTikTokURL_ === '#') ? ' rc-disabled' : '' %>" title="TikTok">
-            <svg class="mediaSVG" viewBox="0 0 24 24">
-                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/>
-            </svg>
-        </a>
-    </div>
-
-    <!-- ══════════ Palco principal ══════════ -->
-    <div id="rcStage">
-
-        <!-- Conta (canto superior direito) -->
-        <div id="rcTopbar">
-            <div id="user_content" class="rc-account" title="<%- lang('landing.usernameEditButton') %>">
-                <div class="rc-account-who">
-                    <b id="user_text_main"><%- lang('landing.usernamePlaceholder') %></b>
-                    <small class="rc-account-tag"></small>
-                </div>
-                <div id="avatarContainer" class="rc-avatar">
-                    <button id="avatarOverlay"><%- lang('landing.usernameEditButton') %></button>
+        <!-- ══════════ FICHA: quem eu sou + entrar no jogo ══════════ -->
+        <aside id="rcFicha" class="rc-card rc-card--glow">
+            <div class="rc-ficha-head">
+                <span class="rc-eyebrow">Ficha do viajante</span>
+                <div id="image_seal_container" class="rc-update-chip" data-tip="Ver atualização">
+                    <span class="rc-update-dot"></span> Atualização
+                    <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
                 </div>
             </div>
-        </div>
 
-        <!-- Herói -->
-        <div id="rcHero">
-            <div class="rc-eyebrow"><span class="rc-dot"></span> Root RP · Continente de Selenia</div>
-            <h1 class="rc-hero-title">SELENIA</h1>
-            <p class="rc-hero-desc">Um continente onde magia arcana e engenho a vapor se entrelaçam. Escolha sua origem, domine sua arte e deixe sua marca nas crônicas.</p>
-        </div>
+            <div id="user_content" class="rc-portrait" title="Trocar de conta">
+                <div class="rc-portrait-halo"></div>
+                <div id="avatarContainer" class="rc-skin"></div>
+                <div class="rc-portrait-floor"></div>
+                <button id="avatarOverlay" class="rc-portrait-manage"><%- lang('landing.usernameEditButton') %></button>
+            </div>
 
-        <!-- Trilho de notícias -->
-        <div id="rcNews">
-            <div class="news-tabs">
-                <button class="news-tab active" data-tab="news"><span class="panel-gem">◆</span> NOVIDADES</button>
-                <button class="news-tab" data-tab="journal"><span class="panel-gem">◆</span> JORNAL</button>
-                <button class="news-tab" data-tab="tickets"><span class="panel-gem">◆</span> TICKETS <span id="rcTicketsBadge" style="display:none;margin-left:4px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#f87171;color:#fff;font-size:10px;line-height:16px;text-align:center;"></span></button>
+            <div class="rc-ficha-id">
+                <h2 id="user_text_main"><%- lang('landing.usernamePlaceholder') %></h2>
+                <span class="rc-account-tag"></span>
             </div>
-            <div id="rcNewsList" class="news-list" data-content="news">
-                <div class="rc-news-placeholder">Carregando notícias...</div>
-            </div>
-            <div id="rcJournalList" class="news-list" data-content="journal" style="display:none;">
-                <div class="rc-news-placeholder">Carregando jornal...</div>
-            </div>
-            <div id="rcTicketsList" class="news-list" data-content="tickets" style="display:none;flex-direction:column;">
-                <div class="rc-news-placeholder">Carregando tickets...</div>
-            </div>
-        </div>
 
-        <!-- Dock inferior -->
-        <div id="rcDock">
-            <div class="rc-dock-info">
-                <button id="server_selection_button" class="rc-server-name"><%- lang('landing.launchButtonPlaceholder') %></button>
+            <dl class="rc-ficha-stats">
+                <div><dt>Servidor</dt><dd id="rcFichaServer">—</dd></div>
+                <div><dt>Versão</dt><dd id="rcFichaVersion">—</dd></div>
+                <div><dt>Modpack</dt><dd id="rcFichaPack">—</dd></div>
+                <div><dt>Site</dt><dd id="rcFichaLink">—</dd></div>
+            </dl>
+
+            <div class="rc-ficha-launch">
+                <div id="launch_content" class="rc-launch-slot">
+                    <button id="launch_button" class="rc-btn-gold rc-btn-play">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+                        <span><%- lang('landing.launchButton') %></span>
+                    </button>
+                </div>
+                <div class="rc-play-busy"><span class="rc-spinner"></span> Preparando a viagem…</div>
+                <div class="rc-in-game-note"><span class="status-dot online"></span> Em Selenia agora</div>
+                <div class="rc-ficha-actions">
+                    <button id="rcSwitchAccount" class="rc-link">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M7 7h11l-3-3 1.4-1.4L21.8 8l-5.4 5.4L15 12l3-3H7V7zm10 10H6l3 3-1.4 1.4L2.2 16l5.4-5.4L9 12l-3 3h11v2z"/></svg>
+                        Trocar conta
+                    </button>
+                    <button class="rc-icon-btn" id="settingsMediaButton" data-tip="Oficina (configurações)" aria-label="Configurações">
+                        <svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 000-2l2-1.6-2-3.4-2.4 1a7.3 7.3 0 00-1.7-1l-.4-2.5h-4l-.4 2.5a7.3 7.3 0 00-1.7 1l-2.4-1-2 3.4L4.6 11a7.6 7.6 0 000 2l-2 1.6 2 3.4 2.4-1a7.3 7.3 0 001.7 1l.4 2.5h4l.4-2.5a7.3 7.3 0 001.7-1l2.4 1 2-3.4-2-1.6zM12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ══════════ GAZETA DE SELENIA ══════════ -->
+        <section id="rcGazeta" class="rc-card">
+            <header class="rc-gazeta-head">
+                <div class="rc-masthead">
+                    <span class="rc-masthead-title">A Gazeta de Selenia</span>
+                    <span id="rcEdition" class="rc-masthead-edition">&nbsp;</span>
+                </div>
+                <nav class="rc-tabs" aria-label="Seções da Gazeta">
+                    <button class="rc-tab news-tab active" data-tab="news">Gazeta</button>
+                    <button class="rc-tab news-tab" data-tab="journal">Crônicas</button>
+                    <button class="rc-tab news-tab" data-tab="events">Eventos</button>
+                    <button class="rc-tab news-tab" data-tab="tickets">Tickets <span id="rcTicketsBadge" class="rc-badge" style="display:none;"></span></button>
+                </nav>
+            </header>
+            <div class="rc-gazeta-body">
+                <div id="rcNewsList" class="news-list rc-paper" data-content="news">
+                    <div class="rc-news-placeholder"><span class="rc-spinner"></span>Rodando a prensa…</div>
+                </div>
+                <div id="rcJournalList" class="news-list rc-paper" data-content="journal" style="display:none;">
+                    <div class="rc-news-placeholder"><span class="rc-spinner"></span>Abrindo as crônicas…</div>
+                </div>
+                <div id="rcEventsList" class="news-list" data-content="events" style="display:none;">
+                    <div class="rc-news-placeholder"><span class="rc-spinner"></span>Consultando o calendário…</div>
+                </div>
+                <div id="rcTicketsList" class="news-list" data-content="tickets" style="display:none;">
+                    <div class="rc-news-placeholder"><span class="rc-spinner"></span>Carregando tickets…</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════ TORRE DE VIGIA ══════════ -->
+        <aside id="rcTorre">
+            <section class="rc-card rc-hud rc-status">
+                <div class="rc-hud-corners"></div>
+                <div class="rc-status-head">
+                    <span class="rc-eyebrow">Torre de vigia</span>
+                    <button id="server_selection_button" class="rc-link rc-status-server"><%- lang('landing.launchButtonPlaceholder') %></button>
+                </div>
                 <div class="rc-server-status">
                     <span class="status-dot offline"></span>
                     <span id="landingPlayerLabel"><%- lang('landing.serverStatus') %></span>
-                    <span class="rc-sep">·</span>
-                    <span id="player_count"><%- lang('landing.serverStatusPlaceholder') %></span>
-                    <span id="mojangStatusWrapper" class="rc-mojang">
-                        <span class="rc-sep">·</span>
-                        <span id="mojang_status_icon">&#8226;</span>
-                        <div id="mojangStatusTooltip">
-                            <div id="mojangStatusTooltipTitle"><%- lang('landing.mojangStatusTooltipTitle') %></div>
-                            <div id="mojangStatusEssentialContainer"></div>
-                            <div id="mojangStatusNEContainer">
-                                <div class="mojangStatusNEBar"></div>
-                                <div id="mojangStatusNETitle"><%- lang('landing.mojangStatusNETitle') %></div>
-                                <div class="mojangStatusNEBar"></div>
-                            </div>
-                            <div id="mojangStatusNonEssentialContainer"></div>
-                        </div>
-                    </span>
                 </div>
-            </div>
+                <div class="rc-status-players"><span id="player_count"><%- lang('landing.serverStatusPlaceholder') %></span></div>
+                <div class="rc-status-rows">
+                    <div class="rc-status-row">
+                        <span>Ping</span>
+                        <span class="rc-ping"><b id="rcPing">—</b><span class="rc-ping-bars" id="rcPingBars" data-level="0"><i></i><i></i><i></i><i></i></span></span>
+                    </div>
+                    <button id="rcCopyIp" class="rc-ip" data-tip="Copiar endereço">
+                        <span id="rcIp">—</span>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
+                    </button>
+                </div>
+            </section>
 
-            <div class="rc-dock-spacer"></div>
+            <section class="rc-card rc-events-mini">
+                <div class="rc-section-title"><span class="rc-eyebrow">Próximos eventos</span></div>
+                <div id="rcEventsMini"><div class="rc-events-empty">Nenhum evento marcado.</div></div>
+            </section>
 
-            <button class="rc-icon-btn" id="settingsMediaButton" title="Configurações">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.4 13a7.6 7.6 0 000-2l2-1.6-2-3.4-2.4 1a7.3 7.3 0 00-1.7-1l-.4-2.5h-4l-.4 2.5a7.3 7.3 0 00-1.7 1l-2.4-1-2 3.4L4.6 11a7.6 7.6 0 000 2l-2 1.6 2 3.4 2.4-1a7.3 7.3 0 001.7 1l.4 2.5h4l.4-2.5a7.3 7.3 0 001.7-1l2.4 1 2-3.4-2-1.6zM12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z"/></svg>
-            </button>
-
-            <div id="launch_content" class="rc-launch-slot">
-                <button id="launch_button" class="rc-play">
-                    <span class="rc-play-shine"></span>
-                    <span class="launch-icon">▶</span>
-                    <%- lang('landing.launchButton') %>
+            <% const discordURL_ = lang('landing.mediaDiscordURL') %>
+            <nav class="rc-hotbar" aria-label="Atalhos">
+                <button class="rc-slot" data-key="1" data-url="<%= lang('landing.shortcutStoreURL') %>" data-tip="Loja">
+                    <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM5.2 4H2V2h4.5l.9 2H21l-3.4 8.1a2 2 0 0 1-1.8 1.2H8.1l-1 1.7H19v2H5.5l2.3-4L5.2 4z"/></svg>
+                    <span>Loja</span>
                 </button>
-            </div>
+                <button class="rc-slot" data-key="2" data-url="<%= lang('landing.shortcutRulesURL') %>" data-tip="Regras">
+                    <svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM7 12v2h10v-2H7zm0 4v2h7v-2H7z"/></svg>
+                    <span>Regras</span>
+                </button>
+                <button class="rc-slot" data-key="3" data-url="<%= discordURL_ %>" data-tip="Discord">
+                    <svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.4 18.4 0 0 0-5.6 0L8.6 3a19.7 19.7 0 0 0-4.9 1.5C.6 9.1-.3 13.6.1 18.1a19.9 19.9 0 0 0 6 3l1.3-2a12.8 12.8 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12.2 0l.5.4c-.6.4-1.3.7-2 1l1.3 2a19.9 19.9 0 0 0 6-3c.5-5.2-.9-9.7-3.6-13.7zM8 15.3c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4zm8 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4z"/></svg>
+                    <span>Discord</span>
+                </button>
+                <button class="rc-slot" data-key="4" data-url="<%= lang('landing.shortcutSiteURL') %>" data-tip="Site oficial">
+                    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 6h-3a15.6 15.6 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8zM12 4c.8 1.2 1.5 2.5 1.9 4h-3.8c.4-1.5 1.1-2.8 1.9-4zM4.3 14a8.2 8.2 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4H4.3zm.8 2h3a15.6 15.6 0 0 0 1.4 3.6A8 8 0 0 1 5.1 16zm3-8h-3a8 8 0 0 1 4.4-3.6C8.9 5.5 8.4 6.7 8.1 8zM12 20c-.8-1.2-1.5-2.5-1.9-4h3.8c-.4 1.5-1.1 2.8-1.9 4zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4zm.3 5.6c.6-1.1 1.1-2.3 1.4-3.6h3a8 8 0 0 1-4.4 3.6zm1.7-5.6a16.5 16.5 0 0 0 0-4h3.4a8.2 8.2 0 0 1 0 4h-3.4z"/></svg>
+                    <span>Site</span>
+                </button>
+                <button class="rc-slot" data-key="5" data-action="tickets" data-tip="Abrir ticket">
+                    <svg viewBox="0 0 24 24"><path d="M22 10V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 1 1 0 4v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 1 1 0-4zm-9 7.5h-2v-2h2v2zm0-4.5h-2v-2h2v2zm0-4.5h-2v-2h2v2z"/></svg>
+                    <span>Ticket</span>
+                </button>
+            </nav>
 
-            <div id="launch_details" class="rc-progress" style="display: none;">
-                <span id="launch_details_text" class="progress-text"><%- lang('landing.launchDetails') %></span>
-                <div id="launch_progress" class="rc-bar"><div id="launch_progress_fill"></div></div>
-                <span id="launch_progress_label" class="progress-percent">0%</span>
-            </div>
-
-            <div id="rcVersion" class="rc-ver">v1.0.7</div>
-        </div>
-
+            <div id="rcVersion" class="rc-ver">v1.0.8</div>
+        </aside>
     </div>
 
-    <!-- ══════════ Elementos legados (ocultos, usados pelo JS) ══════════ -->
+    <!-- ══════════ BARRA DE XP (progresso do launch) ══════════ -->
+    <div id="launch_details" class="rc-xp" style="display: none;">
+        <div class="rc-xp-meta">
+            <span id="launch_details_text" class="rc-xp-text"><%- lang('landing.launchDetails') %></span>
+            <span id="launch_progress_label" class="rc-xp-percent">0%</span>
+        </div>
+        <div id="launch_progress" class="rc-xp-bar"><div id="launch_progress_fill"></div></div>
+    </div>
+
+    <!-- Nome do usuário (fonte de verdade do landing.js; espelhado em #user_text_main) -->
     <span id="user_text" style="display:none;"><%- lang('landing.usernamePlaceholder') %></span>
-
-    <button id="newsButton" style="display:none;">
-        <div id="newsButtonAlert" style="display: none;"></div>
-        <span id="newsButtonText"><%- lang('landing.newsButton') %></span>
-    </button>
-    <div id="lower" style="display:none;">
-        <div id="left"><div class="bot_wrapper"><div id="content"></div></div></div>
-        <div id="center"><div class="bot_wrapper"><div id="content"></div></div></div>
-        <div id="right"><div class="bot_wrapper"></div></div>
-    </div>
-
-    <div id="newsContainer" style="display:none;">
-        <div id="newsContent" article="-1" style="display: none;">
-            <div id="newsStatusContainer">
-                <div id="newsStatusContent">
-                    <div id="newsTitleContainer">
-                        <a id="newsArticleTitle" href="#">Lorem Ipsum</a>
-                    </div>
-                    <div id="newsMetaContainer">
-                        <div id="newsArticleDateWrapper">
-                            <span id="newsArticleDate">Mar 15, 44 BC, 9:14 AM</span>
-                        </div>
-                        <div id="newsArticleAuthorWrapper">
-                            <span id="newsArticleAuthor">by Cicero</span>
-                        </div>
-                        <a href="#" id="newsArticleComments">0 Comments</a>
-                    </div>
-                </div>
-                <div id="newsNavigationContainer">
-                    <button id="newsNavigateLeft">
-                        <svg id="newsNavigationLeftSVG" viewBox="0 0 24.87 13.97">
-                            <defs><style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;transition:0.25s ease;}</style></defs>
-                            <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
-                        </svg>
-                    </button>
-                    <span id="newsNavigationStatus"><%- lang('landing.newsNavigationStatus', { currentPage: 1, totalPages: 1 }) %></span>
-                    <button id="newsNavigateRight">
-                        <svg id="newsNavigationRightSVG" viewBox="0 0 24.87 13.97">
-                            <defs><style>.arrowLine{fill:none;stroke:#FFF;stroke-width:2px;transition:0.25s ease;}</style></defs>
-                            <polyline class="arrowLine" points="0.71 13.26 12.56 1.41 24.16 13.02"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div id="newsArticleContainer">
-                <div id="newsArticleContent">
-                    <div id="newsArticleContentScrollable"></div>
-                </div>
-            </div>
-        </div>
-        <div id="newsErrorContainer">
-            <div id="newsErrorLoading">
-                <span id="nELoadSpan" class="newsErrorContent"><%- lang('landing.newsErrorLoadSpan') %></span>
-            </div>
-            <div id="newsErrorFailed" style="display: none;">
-                <span id="nEFailedSpan" class="newsErrorContent"><%- lang('landing.newsErrorFailedSpan') %></span>
-                <button id="newsErrorRetry"><%- lang('landing.newsErrorRetryButton') %></button>
-            </div>
-            <div id="newsErrorNone" style="display: none;">
-                <span id="nENoneSpan" class="newsErrorContent"><%- lang('landing.newsErrorNoneSpan') %></span>
-            </div>
-        </div>
-    </div>
 
     <script src="./assets/js/scripts/landing.js"></script>
 </div>

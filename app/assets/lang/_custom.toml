@@ -8,7 +8,19 @@
 title = "Root Client"
 
 [ejs.landing]
-mediaDiscordURL = "#"
+launchButton = "Entrar em Selenia"
+launchButtonPlaceholder = "Carregando…"
+launchDetails = "Preparando a viagem…"
+usernamePlaceholder = "Viajante"
+usernameEditButton = "Gerenciar"
+updateAvailableTooltip = "Atualização disponível"
+serverStatus = "Servidor"
+serverStatusPlaceholder = "—"
+# Atalhos da hotbar (teclas 1-5). "#" = slot aparece trancado ("em breve").
+shortcutStoreURL = "#"
+shortcutRulesURL = "https://rootrp-site.vercel.app/como-jogar"
+shortcutSiteURL = "https://rootrp-site.vercel.app"
+mediaDiscordURL = "https://discord.gg/scdMNH99sZ"
 mediaYouTubeURL = "#"
 mediaInstagramURL = "#"
 mediaTikTokURL = "#"
@@ -16,6 +28,42 @@ mediaXURL = "#"
 mediaGitHubURL = "#"
 
 [ejs.settings]
+navHeaderText = "Oficina"
+navAccount = "Contas"
+navMinecraft = "Jogo"
+navMods = "Mods"
+navJava = "Desempenho"
+navLauncher = "Launcher"
+navAbout = "Sobre"
+navUpdates = "Atualizações"
+navDone = "Voltar à Mesa"
+tabAccountHeaderText = "Passaportes"
+tabAccountHeaderDesc = "Contas que podem entrar em Selenia por este computador."
+microsoftAccount = "Contas originais"
+addMicrosoftAccount = "+ Adicionar conta"
+minecraftTabHeaderText = "Jogo"
+minecraftTabHeaderDesc = "Como o Minecraft abre e se comporta."
+launchFullscreenTitle = "Abrir em tela cheia"
+autoConnectTitle = "Entrar direto no servidor ao abrir o jogo"
+launchDetachedTitle = "Manter o jogo aberto se o launcher fechar"
+tabModsHeaderText = "Mods"
+tabModsHeaderDesc = "O modpack oficial é sincronizado sozinho. Aqui você ajusta só os extras."
+requiredMods = "Modpack oficial"
+optionalMods = "Opcionais"
+dropinMods = "Seus mods"
+addMods = "Abrir pasta"
+tabJavaHeaderText = "Desempenho"
+tabJavaHeaderDesc = "Memória e Java. O padrão já funciona: mexa só se precisar."
+maxRAM = "Memória máxima"
+minRAM = "Memória mínima"
+launcherTabHeaderText = "Launcher"
+launcherTabHeaderDesc = "Atualizações e onde os arquivos do jogo ficam."
+allowPrereleaseTitle = "Receber versões de teste"
+aboutTabHeaderText = "Sobre"
+aboutTabHeaderDesc = "Versão instalada e notas de lançamento."
+launcherUpdatesHeaderText = "Atualizações"
+launcherUpdatesHeaderDesc = "Baixe e instale novas versões do Root Client."
+checkForUpdates = "Procurar atualização"
 sourceGithubLink = "https://github.com/WesleyNogueiraOne/RootClient"
 supportLink = "https://rootrp-site.vercel.app"
 
@@ -23,3 +71,34 @@ supportLink = "https://rootrp-site.vercel.app"
 welcomeHeader = "BEM-VINDO A SELENIA"
 welcomeDescription = "Muito além das fronteiras conhecidas, ergue-se Selenia — um continente onde a magia arcana e o engenho a vapor se entrelaçam. Aqui, feiticeiros forjam runas em bigornas de latão, cidades flutuam sobre cristais de aurora e antigos segredos aguardam nas ruínas do Antigo Reino. Escolha sua origem, domine sua arte e deixe sua marca nas crônicas de Selenia. Um mundo vivo, moldado pela comunidade do Root RP, é seu para explorar."
 welcomeDescCTA = "Você está a poucos cliques de Selenia."
+
+[ejs.loginOptions]
+loginWithMicrosoft = "Entrar com Microsoft"
+loginWithOffline = "Entrar sem conta original"
+offlineUsernamePlaceholder = "Seu apelido em Selenia"
+offlineConfirmButton = "Carimbar passaporte"
+offlineBackButton = "Voltar"
+
+[ejs.overlay]
+serverSelectHeader = "Para onde vamos?"
+serverSelectConfirm = "Ir para cá"
+accountSelectHeader = "Com qual passaporte você vai?"
+accountSelectConfirm = "Usar este"
+
+[ejs.waiting]
+waitingText = "Aguardando a Microsoft…"
+
+[js.loginOptions.offline]
+confirm = "Carimbar passaporte"
+loggingIn = "Carimbando…"
+
+[js.landing.serverStatus]
+server = "Servidor"
+offline = "Offline"
+players = "Online agora"
+
+[js.landing.selectedAccount]
+noAccountSelected = "Sem passaporte"
+
+[js.landing.dlAsync]
+doneEnjoyServer = "Pronto. Boa viagem por Selenia!"

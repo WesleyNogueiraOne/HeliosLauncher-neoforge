@@ -1,12 +1,10 @@
 /**
- * rootclient-ui.js — aba TICKETS no painel de notícias (renderer).
+ * rootclient-ui.js: aba TICKETS da Gazeta (renderer).
  * Cards inline expansíveis (vê sem abrir, clica pra expandir a thread + responder).
- * Fala com o main via IPC (rootapi.js).
+ * Fala com o main via IPC (rootapi.js). Visual nas classes .rc-ticket* (landing.css).
  */
 (function () {
     const { ipcRenderer } = require('electron')
-    const G = '#eab94d', TEAL = '#57c7b8', BG = '#0b0f0c', BORDER = '#223029', TEXT = '#e8e6df', MUTED = '#9ba8a2'
-    const CARD = `background:rgba(16,23,26,.55);border:1px solid ${BORDER};border-radius:12px;padding:12px 14px;overflow:visible;flex:none;`
 
     const rc = {
         me: () => ipcRenderer.invoke('rc:me'),
@@ -21,18 +19,21 @@
         upload: (p) => ipcRenderer.invoke('rc:upload', p),
     }
 
-    function el(tag, style, text) { const e = document.createElement(tag); if (style) e.setAttribute('style', style); if (text != null) e.textContent = text; return e }
-    function field(tag, ph, extra) { const e = el(tag, `width:100%;box-sizing:border-box;border-radius:8px;padding:8px;font-size:12px;background:${BG};border:1px solid ${BORDER};color:${TEXT};${extra || ''}`); if (ph) e.placeholder = ph; return e }
-    function button(label, primary) { return el('button', `cursor:pointer;border-radius:8px;padding:8px 14px;font-size:12px;border:1px solid ${primary ? G : BORDER};background:${primary ? G : 'transparent'};color:${primary ? '#201603' : TEXT};font-weight:${primary ? '700' : '500'};`, label) }
-    function escapeHtml(s) { return String(s || '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) }
+    function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e }
+    function field(tag, ph) { const e = el(tag, 'rc-input rc-ticket-field'); if (ph) e.placeholder = ph; return e }
+    function button(label, primary) { return el('button', (primary ? 'rc-btn-gold' : 'rc-btn-ghost') + ' rc-btn-sm', label) }
+    function msgLine() { return el('div', 'rc-ticket-msg') }
+    function setMsg(m, text, isError) { m.textContent = text; m.classList.toggle('is-error', !!isError) }
     function fileToDataUrl(f) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result)); r.onerror = rej; r.readAsDataURL(f) }) }
     function listEl() { return document.getElementById('rcTicketsList') }
 
+    const STATUS_CHIP = { ABERTO: 'teal', RESPONDIDO: 'gold', AGUARDANDO: 'arcane', FECHADO: '' }
+
     function attachRow() {
         const ids = []
-        const row = el('div', 'margin:6px 0;')
-        const btn = button('Anexar imagem'); btn.style.fontSize = '11px'; btn.style.padding = '5px 10px'
-        const thumbs = el('div', 'display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;')
+        const row = el('div', 'rc-ticket-attach')
+        const btn = button('Anexar imagem')
+        const thumbs = el('div', 'rc-ticket-thumbs')
         const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/png,image/jpeg,image/webp,image/gif'; inp.style.display = 'none'
         btn.onclick = () => inp.click()
         inp.onchange = async () => {
@@ -41,42 +42,48 @@
             const dataBase64 = await fileToDataUrl(f)
             const r = await rc.upload({ filename: f.name, mime: f.type, dataBase64 }).catch(() => ({ error: 'x' }))
             btn.textContent = 'Anexar imagem'
-            if (r && r.id) { ids.push(r.id); const im = el('img'); im.src = URL.createObjectURL(f); im.setAttribute('style', `width:42px;height:42px;object-fit:cover;border-radius:6px;border:1px solid ${BORDER}`); thumbs.appendChild(im) }
+            if (r && r.id) { ids.push(r.id); const im = el('img'); im.src = URL.createObjectURL(f); thumbs.appendChild(im) }
         }
-        row.appendChild(btn); row.appendChild(thumbs); row.appendChild(inp)
+        row.append(btn, thumbs, inp)
         return { row, ids }
     }
 
     async function loadTickets() {
         const list = listEl(); if (!list) return
-        list.innerHTML = '<div class="rc-news-placeholder">Carregando…</div>'
+        list.innerHTML = '<div class="rc-news-placeholder"><span class="rc-spinner"></span>Carregando tickets…</div>'
         const me = await rc.me().catch(() => null)
         list.innerHTML = ''
         if (!me || me.error) return list.appendChild(vincularCard())
         const data = await rc.tickets().catch(() => ({ categories: [], tickets: [] }))
         list.appendChild(newTicketCard(me, data))
         const tickets = data.tickets || []
-        if (!tickets.length) list.appendChild(el('div', `color:${MUTED};font-size:12px;padding:8px 2px;`, 'Nenhum ticket ainda.'))
+        if (!tickets.length) list.appendChild(el('div', 'rc-empty', 'Nenhum ticket ainda. Se algo der errado, abra um acima.'))
         tickets.forEach(t => list.appendChild(ticketCard(t)))
     }
+    window.rcLoadTickets = loadTickets
 
     function vincularCard() {
-        const c = el('div', CARD)
-        c.appendChild(el('div', `font-size:13px;color:${TEXT};font-weight:600;margin-bottom:4px;`, 'Vincular ao site'))
-        const p = el('div', `font-size:12px;color:${MUTED};margin-bottom:8px;`, 'Conecte o launcher pra abrir tickets e receber avisos.')
-        c.appendChild(p)
+        const c = el('div', 'rc-ticket rc-ticket--link')
+        c.appendChild(el('span', 'rc-eyebrow', 'Vincular ao site'))
+        c.appendChild(el('h3', 'rc-ticket-heading', 'Conecte o launcher à sua conta Root'))
+        c.appendChild(el('p', 'rc-ticket-text', 'Com o vínculo você abre tickets direto daqui, recebe respostas da staff e avisos importantes.'))
         const b = button('Vincular conta', true)
         b.onclick = async () => {
             const r = await rc.linkStart().catch(() => null)
             if (!r || !r.user_code) return
             c.innerHTML = ''
-            c.appendChild(el('div', `font-size:12px;color:${MUTED};`, 'Faça login no site (abrimos no navegador) e digite:'))
-            c.appendChild(el('div', `text-align:center;font-size:24px;letter-spacing:5px;font-weight:700;color:${TEAL};margin:10px 0;`, r.user_code))
-            c.appendChild(el('div', `font-size:11px;color:${MUTED};`, 'Aguardando…'))
+            c.appendChild(el('span', 'rc-eyebrow', 'Quase lá'))
+            c.appendChild(el('p', 'rc-ticket-text', 'Abrimos o site no navegador. Faça login e digite este código:'))
+            c.appendChild(el('div', 'rc-ticket-code', r.user_code))
+            const wait = el('div', 'rc-ticket-msg'); wait.innerHTML = '<span class="rc-spinner"></span> Aguardando confirmação…'
+            c.appendChild(wait)
             const timer = setInterval(async () => {
                 const p2 = await rc.linkPoll(r.device_code).catch(() => ({}))
-                if (p2.status === 'ok') { clearInterval(timer); loadTickets() }
-                else if (p2.error) { clearInterval(timer); loadTickets() }
+                if (p2.status === 'ok' || p2.error) {
+                    clearInterval(timer)
+                    if (p2.status === 'ok' && typeof refreshSiteLink === 'function') refreshSiteLink()
+                    loadTickets()
+                }
             }, (r.interval || 3) * 1000)
         }
         c.appendChild(b)
@@ -84,70 +91,80 @@
     }
 
     function newTicketCard(me, data) {
-        const c = el('div', CARD)
-        const head = el('div', `font-size:13px;color:${G};font-weight:700;cursor:pointer;`, '＋ Abrir novo ticket')
-        const bodyWrap = el('div', 'display:none;margin-top:8px;')
-        head.onclick = () => { bodyWrap.style.display = bodyWrap.style.display === 'none' ? 'block' : 'none' }
-        c.appendChild(head); c.appendChild(bodyWrap)
+        const c = el('div', 'rc-ticket rc-ticket--new')
+        const head = el('button', 'rc-ticket-head')
+        head.innerHTML = '<span class="rc-ticket-plus">＋</span><span><b>Abrir novo ticket</b><small>Bug, denúncia, dúvida ou pedido para a staff</small></span>'
+        const bodyWrap = el('div', 'rc-ticket-body'); bodyWrap.hidden = true
+        head.onclick = () => { bodyWrap.hidden = !bodyWrap.hidden; c.classList.toggle('is-open', !bodyWrap.hidden) }
+        c.append(head, bodyWrap)
 
         const cats = data.categories || []
-        const sel = field('select', null, 'margin-bottom:6px;')
+        const sel = field('select')
         cats.forEach(cat => { const o = el('option', null, cat.name); o.value = cat.slug; sel.appendChild(o) })
-        const subj = field('input', 'Assunto', 'margin-bottom:6px;')
-        const bodyEl = field('textarea', 'Descreva. Client, SO e log vão junto.', 'min-height:70px;')
+        const subj = field('input', 'Assunto')
+        const bodyEl = field('textarea', 'Descreva o que aconteceu. Versão do client, sistema e log vão junto automaticamente.')
         const att = attachRow()
-        const msg = el('div', 'font-size:11px;margin:6px 0;')
-        const send = button('Abrir ticket', true)
+        const msg = msgLine()
+        const send = button('Enviar ticket', true)
         send.onclick = async () => {
-            msg.textContent = 'Enviando…'; msg.style.color = MUTED
+            setMsg(msg, 'Enviando…')
             const logTail = (typeof window.RootClientLogTail === 'function' && window.RootClientLogTail()) || ''
             const mcName = (me.minecraft && me.minecraft[0] && me.minecraft[0].username) || ''
-            const r = await rc.openTicket({ category: sel.value, subject: subj.value, body: bodyEl.value, mcAccount: mcName, logTail, attachmentIds: att.ids }).catch(() => ({ error: 'falha' }))
-            if (r.error) { msg.textContent = r.error; msg.style.color = '#f87171' }
-            else loadTickets()
+            const r = await rc.openTicket({ category: sel.value, subject: subj.value, body: bodyEl.value, mcAccount: mcName, logTail, attachmentIds: att.ids }).catch(() => ({ error: 'Falha ao enviar.' }))
+            if (r.error) setMsg(msg, r.error, true)
+            else { window.rcToast && window.rcToast('Ticket enviado', subj.value || 'A staff vai responder por aqui.', '✉'); loadTickets() }
         }
-        bodyWrap.appendChild(sel); bodyWrap.appendChild(subj); bodyWrap.appendChild(bodyEl); bodyWrap.appendChild(att.row); bodyWrap.appendChild(send); bodyWrap.appendChild(msg)
+        const actions = el('div', 'rc-ticket-actions'); actions.append(att.row, send)
+        bodyWrap.append(sel, subj, bodyEl, actions, msg)
         return c
     }
 
     function ticketCard(t) {
-        const c = el('div', CARD)
-        const head = el('div', 'cursor:pointer;')
-        head.innerHTML = `<div style="font-size:13px;color:${TEXT}">#${t.code} ${escapeHtml(t.subject)}</div><div style="font-size:11px;color:${MUTED}">${t.status}</div>`
-        const thread = el('div', 'display:none;margin-top:10px;')
+        const c = el('div', 'rc-ticket')
+        const head = el('button', 'rc-ticket-head')
+        const chip = STATUS_CHIP[t.status] != null ? STATUS_CHIP[t.status] : ''
+        const code = el('span', 'rc-ticket-code-sm', '#' + t.code)
+        const title = el('b', null, t.subject || 'Sem assunto')
+        const st = el('span', 'rc-chip' + (chip ? ' rc-chip--' + chip : ''), t.status || '')
+        const left = el('span', 'rc-ticket-title'); left.append(code, title)
+        head.append(left, st)
+        const thread = el('div', 'rc-ticket-body'); thread.hidden = true
         head.onclick = () => {
-            if (thread.style.display === 'none') { thread.style.display = 'block'; expand(thread, t.id) }
-            else thread.style.display = 'none'
+            thread.hidden = !thread.hidden
+            c.classList.toggle('is-open', !thread.hidden)
+            if (!thread.hidden) expand(thread, t.id)
         }
-        c.appendChild(head); c.appendChild(thread)
+        c.append(head, thread)
         return c
     }
 
     async function expand(thread, id) {
-        thread.innerHTML = `<div style="color:${MUTED};font-size:12px">Carregando…</div>`
+        thread.innerHTML = '<div class="rc-ticket-msg"><span class="rc-spinner"></span> Carregando…</div>'
         const t = await rc.getTicket(id).catch(() => null)
-        if (!t || t.error) { thread.innerHTML = `<div style="color:#f87171;font-size:12px">Erro.</div>`; return }
+        if (!t || t.error) { thread.innerHTML = '<div class="rc-ticket-msg is-error">Não deu pra abrir este ticket.</div>'; return }
         thread.innerHTML = ''
         updateBadge()
         ;(t.messages || []).forEach(m => {
-            const b = el('div', `border:1px solid ${m.staff ? 'rgba(87,199,184,.3)' : BORDER};background:${m.staff ? 'rgba(87,199,184,.06)' : 'rgba(255,255,255,.02)'};border-radius:10px;padding:7px 9px;margin-bottom:6px;`)
-            b.innerHTML = `<div style="font-size:10px;color:${m.staff ? TEAL : G};margin-bottom:2px">${escapeHtml(m.author || '—')}${m.staff ? ' · staff' : ''}</div><div style="font-size:12px;color:${TEXT};white-space:pre-wrap">${escapeHtml(m.body)}</div>`
-            ;(m.attachments || []).forEach(a => { const im = el('img'); im.src = a.data; im.setAttribute('style', `margin-top:5px;max-width:150px;max-height:150px;border-radius:6px;border:1px solid ${BORDER};display:block`); b.appendChild(im) })
+            const b = el('div', 'rc-ticket-bubble' + (m.staff ? ' is-staff' : ''))
+            b.appendChild(el('div', 'rc-ticket-author', (m.author || '—') + (m.staff ? ' · staff' : '')))
+            b.appendChild(el('div', 'rc-ticket-text', m.body))
+            ;(m.attachments || []).forEach(a => { const im = el('img', 'rc-ticket-img'); im.src = a.data; b.appendChild(im) })
             thread.appendChild(b)
         })
-        if (t.status === 'FECHADO') { thread.appendChild(el('div', `font-size:11px;color:${MUTED};`, 'Ticket fechado.')); return }
-        const box = field('textarea', 'Responder…', 'min-height:56px;')
+        if (t.status === 'FECHADO') { thread.appendChild(el('div', 'rc-ticket-msg', 'Ticket fechado.')); return }
+        const box = field('textarea', 'Responder…')
         const att = attachRow()
-        const msg = el('div', 'font-size:11px;margin:5px 0;')
+        const msg = msgLine()
         const send = button('Responder', true)
         send.onclick = async () => {
             if (!box.value.trim() && att.ids.length === 0) return
-            msg.textContent = 'Enviando…'; msg.style.color = MUTED
-            const r = await rc.reply(id, box.value, att.ids).catch(() => ({ error: 'falha' }))
-            if (r.error) { msg.textContent = r.error; msg.style.color = '#f87171' }
+            setMsg(msg, 'Enviando…')
+            const r = await rc.reply(id, box.value, att.ids).catch(() => ({ error: 'Falha ao enviar.' }))
+            if (r.error) setMsg(msg, r.error, true)
             else expand(thread, id)
         }
-        thread.appendChild(box); thread.appendChild(att.row); thread.appendChild(send); thread.appendChild(msg)
+        const actions = el('div', 'rc-ticket-actions'); actions.append(att.row, send)
+        thread.append(box, actions, msg)
     }
 
     async function updateBadge() {
@@ -159,15 +176,7 @@
     }
 
     function setup() {
-        const list = listEl()
-        if (!list) return
-        document.querySelectorAll('.news-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                const target = tab.getAttribute('data-tab')
-                if (target === 'tickets') { list.style.display = 'flex'; loadTickets() }
-                else { list.style.display = 'none' }
-            })
-        })
+        if (!listEl()) return
         updateBadge()
         setInterval(updateBadge, 20000)
     }

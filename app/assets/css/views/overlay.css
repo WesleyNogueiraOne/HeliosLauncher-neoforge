@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════════════════════════════
+   ROOT CLIENT · MODAIS (overlay.ejs)
+   ═══════════════════════════════════════════════════════════════ */
+#overlayContainer {
+    position: absolute; top: var(--frame-h); left: 0; right: 0; bottom: 0;
+    z-index: 300;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    background: rgba(8, 11, 16, .62);
+}
+#overlayContainer[style*="none"] { display: none !important; }
+
+.rc-modal {
+    width: min(480px, 100%);
+    max-height: 100%;
+    padding: 26px 28px 22px;
+    display: flex; flex-direction: column; gap: 10px;
+    background: linear-gradient(180deg, rgba(23,30,42,.98), rgba(18,24,34,.98));
+    box-shadow: var(--shadow-lg);
+    animation: rcModalIn .26s var(--ease-out) both;
+}
+@keyframes rcModalIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+.rc-modal > * { position: relative; z-index: 1; }
+
+#overlayTitle, #serverSelectHeader, #accountSelectHeader {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 22px; line-height: 1.2; color: var(--text);
+}
+#overlayDesc { font-size: 13.5px; line-height: 1.65; color: #c3c9d4; -webkit-user-select: text; user-select: text; }
+#overlayDesc a { color: var(--teal); }
+
+.rc-modal-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+.rc-modal-actions > div:empty { display: none; }
+
+/* Listas (servidores / contas) */
+#serverSelectList, #accountSelectList { max-height: 320px; overflow-y: auto; margin: 6px -4px 0; padding: 4px; }
+#serverSelectListScrollable, #accountSelectListScrollable { display: flex; flex-direction: column; gap: 8px; }
+
+.serverListing, .accountListing {
+    width: 100%;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--r-inner);
+    border: 1px solid var(--border);
+    background: #ffffff04;
+    text-align: left;
+    transition: border-color .18s, background .18s;
+}
+.serverListing:hover, .accountListing:hover { border-color: var(--border-strong); background: #ffffff08; }
+.serverListing[selected], .accountListing[selected] { border-color: var(--gold); background: #c98a3f14; box-shadow: inset 3px 0 0 var(--gold); }
+
+.serverListingImg { width: 44px; height: 44px; border-radius: 10px; object-fit: contain; background: var(--bg-2); border: 1px solid var(--border); padding: 4px; flex: none; }
+.serverListingDetails { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+.serverListingName { font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--text); }
+.serverListingDescription { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.serverListingInfo { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.serverListingVersion, .serverListingRevision {
+    height: 18px; padding: 0 7px; border-radius: var(--r-pill);
+    font-size: 10px; font-weight: 600; letter-spacing: .08em; line-height: 18px;
+    border: 1px solid var(--border-strong); color: var(--muted);
+}
+.serverListingVersion { border-color: #5fb0a866; color: var(--teal); }
+.serverListingStarWrapper { position: relative; display: inline-flex; align-items: center; }
+.rcMainBadge { color: var(--gold-soft); font-size: 11px; }
+.serverListingStarTooltip { display: none; }
+
+.accountListing img { width: 36px; height: 36px; border-radius: 8px; image-rendering: pixelated; border: 1px solid var(--border); }
+.accountListingName { font-weight: 600; font-size: 14px; color: var(--text); }

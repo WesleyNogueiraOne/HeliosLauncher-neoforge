@@ -65,25 +65,17 @@ function syncBackgroundPlayback(){
 }
 document.addEventListener('visibilitychange', syncBackgroundPlayback)
 window.rcBackground = {
-    setGameRunning(running){ bgGameRunning = !!running; syncBackgroundPlayback() }
+    setGameRunning(running){
+        bgGameRunning = !!running
+        document.body.classList.toggle('rc-in-game', bgGameRunning)
+        syncBackgroundPlayback()
+    }
 }
-
-// Runas decorativas
-const bgRunes = document.createElement('div')
-bgRunes.id = 'bgRunes'
-const runeChars = ['ᚱ', 'ᚦ', 'ᚷ', 'ᚹ', 'ᛗ', 'ᚾ', 'ᛁ', 'ᚻ']
-runeChars.forEach(r => {
-    const span = document.createElement('span')
-    span.className = 'rune'
-    span.textContent = r
-    bgRunes.appendChild(span)
-})
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Inserir slideshow + runas no fundo (fixos, atrás de tudo)
+    // Fundo fixo, atrás de tudo
     document.body.insertBefore(bgSlideshow, document.body.firstChild)
-    document.body.insertBefore(bgRunes, document.body.firstChild)
 
     // Versão real do app (vem do package.json)
     const versionEl = document.getElementById('rcVersion')
@@ -102,15 +94,20 @@ document.addEventListener('DOMContentLoaded', () => {
         obs.observe(userText, { childList: true, subtree: true, characterData: true })
     }
 
-    // Abrir seleção de conta
-    const userContent = document.getElementById('user_content')
-    if (userContent) userContent.addEventListener('click', (e) => {
-        // o avatar tem ação própria (abre Configurações > Conta)
-        if (e.target.closest('#avatarOverlay')) return
+    // Abrir seleção de conta (retrato da ficha ou link "Trocar conta")
+    const openAccountSelect = () => {
         try {
             prepareAccountSelectionList()
-            bindOverlayKeys(true, 'accountSelectContent', true)
-            $('#accountSelectContent').fadeIn(250)
+            window.rcAccountSelectStandalone = true
+            toggleOverlay(true, true, 'accountSelectContent')
         } catch(e) { console.log(e) }
+    }
+    const userContent = document.getElementById('user_content')
+    if (userContent) userContent.addEventListener('click', (e) => {
+        // o botão "gerenciar" tem ação própria (abre Oficina > Contas)
+        if (e.target.closest('#avatarOverlay')) return
+        openAccountSelect()
     })
+    const switchBtn = document.getElementById('rcSwitchAccount')
+    if (switchBtn) switchBtn.addEventListener('click', openAccountSelect)
 })

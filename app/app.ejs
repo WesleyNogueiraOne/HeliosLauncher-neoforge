@@ -1,31 +1,17 @@
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" http-equiv="Content-Security-Policy" content="script-src 'self' 'sha256-In6B8teKZQll5heMl9bS7CESTbGvuAt3VVV86BUQBDk=' 'sha256-6BF721NlsV0rHnIpMOXFIwN5SG7zhm87DueBBSfx/bY=' 'sha256-jWSAZtbg7Ix1hMUhzhpNI82z5JOjbMnzq33DvJF8kos='"/>
     <title><%= lang('app.title') %></title>
     <script src="./assets/js/scripts/uicore.js"></script>
     <script src="./assets/js/scripts/uibinder.js"></script>
-    <link type="text/css" rel="stylesheet" href="./assets/css/launcher.css">
-    <style>
-    body {
-    background: #0d0820;
-    -webkit-user-select: none;
-    overflow: hidden;
-}
-#main {
-    display: none;
-    height: calc(100% - 22px);
-    width: 100%;
-    position: absolute;
-    z-index: 10;
-    background: none;
-    overflow: hidden;
-    border: none;
-    outline: none;
-}
-#main[overlay] {
-    filter: blur(3px) contrast(0.9) brightness(1.0);
-}
-</style>
+    <link type="text/css" rel="stylesheet" href="./assets/css/fonts.css">
+    <link type="text/css" rel="stylesheet" href="./assets/css/tokens.css">
+    <link type="text/css" rel="stylesheet" href="./assets/css/base.css">
+    <link type="text/css" rel="stylesheet" href="./assets/css/components.css">
+    <link type="text/css" rel="stylesheet" href="./assets/css/views/landing.css">
+    <link type="text/css" rel="stylesheet" href="./assets/css/views/login.css">
+    <link type="text/css" rel="stylesheet" href="./assets/css/views/settings.css">
+    <link type="text/css" rel="stylesheet" href="./assets/css/views/overlay.css">
 </head>
 <body bkid="<%=bkid%>">
     <%- include('frame') %>
@@ -39,14 +25,21 @@
     <%- include('overlay') %>
     <div id="loadingContainer">
         <div id="loadingContent">
-            <div id="loadSpinnerContainer">
-                <img id="loadCenterImage" src="assets/images/logo.png">
-                <img id="loadSpinnerImage" class="rotating" src="assets/images/loading-ring.png">
-            </div>
+            <img id="loadCenterImage" src="assets/images/logo.png" alt="">
+            <svg id="loadSprout" viewBox="0 0 120 44" aria-hidden="true">
+                <path class="sprout-ground" d="M10 30 H110"/>
+                <path class="sprout-root" d="M60 30 C58 34 54 36 50 40 M60 30 C62 35 67 37 71 41 M60 30 V42"/>
+                <path class="sprout-stem" d="M60 30 C60 22 60 16 61 8"/>
+                <path class="sprout-leaf" d="M61 14 C66 8 74 8 78 10 C74 16 66 18 61 14 Z M60 20 C55 15 48 15 44 17 C48 22 55 23 60 20 Z"/>
+            </svg>
+            <span id="loadingCaption">Preparando Selenia</span>
         </div>
     </div>
+    <div id="rcToasts" aria-live="polite"></div>
 <script src="./assets/js/scripts/background.js"></script>
-<script src="./assets/js/scripts/uipolish.js"></script>
+<script src="../node_modules/skinview3d/bundles/skinview3d.bundle.js"></script>
+<script src="./assets/js/scripts/skin3d.js"></script>
+<script src="./assets/js/scripts/rcui.js"></script>
 <script src="./assets/js/scripts/rootclient-ui.js"></script>
 </body>
 </html>

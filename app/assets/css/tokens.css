@@ -1,0 +1,59 @@
+/* ═══════════════════════════════════════════════════════════════
+   ROOT CLIENT · TOKENS (v6)
+   Espelho exato da paleta do site (rootrp-site.vercel.app).
+   Nenhuma view usa hex solto: tudo passa por aqui.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+    /* Superfícies */
+    --bg:            #10141c;
+    --bg-2:          #141a24;
+    --panel:         #171e2a;
+    --panel-2:       #1c2633;
+    --glass:         rgba(23, 30, 42, .72);
+    --glass-strong:  rgba(20, 26, 36, .9);
+    --border:        #273244;
+    --border-strong: #3c4c66;
+
+    /* Texto */
+    --text:          #ece7de;
+    --muted:         #9aa6b6;
+    --muted-2:       #69748a;
+
+    /* Marca */
+    --gold:          #c98a3f;
+    --gold-soft:     #e3b46e;
+    --gold-deep:     #9c6a2c;
+    --gold-bright:   #eab94d;
+    --on-gold:       #21160a;
+
+    /* Semânticas */
+    --teal:          #5fb0a8;
+    --teal-soft:     #8fd0c8;
+    --arcane:        #8b7bd6;
+    --arcane-soft:   #a99ee2;
+    --leaf:          #6fbf73;
+    --danger:        #ff6568;
+    --danger-soft:   #ffa3a3;
+
+    /* Tipografia */
+    --font-display:  'Fraunces', Georgia, serif;
+    --font-ui:       'Space Grotesk', system-ui, sans-serif;
+    --font-mono:     ui-monospace, 'JetBrains Mono', Consolas, monospace;
+
+    /* Efeitos */
+    --glow-gold:     0 0 0 1px #c98a3f24, 0 14px 40px -16px #c98a3f73;
+    --shadow-lg:     0 24px 60px -24px #000000b3;
+    --ease-out:      cubic-bezier(.16, 1, .3, 1);
+    --blur:          blur(14px);
+
+    /* Raios */
+    --r-pill:        999px;
+    --r-module:      16px;
+    --r-inner:       12px;
+    --r-slot:        6px;
+    --r-tip:         4px;
+
+    /* Estrutura */
+    --frame-h:       36px;
+    --gutter:        16px;
+}

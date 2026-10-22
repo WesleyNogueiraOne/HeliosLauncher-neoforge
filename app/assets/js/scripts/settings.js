@@ -349,6 +349,52 @@ document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
     })
 }
 
+// Passaporte provisório (conta offline) direto da Oficina.
+const settingsOfflineForm = document.getElementById('settingsOfflineForm')
+const settingsOfflineName = document.getElementById('settingsOfflineName')
+const settingsOfflineMsg = document.getElementById('settingsOfflineMsg')
+
+function toggleSettingsOfflineForm(open){
+    settingsOfflineForm.hidden = !open
+    settingsOfflineName.value = ''
+    settingsOfflineName.classList.remove('rcInputError')
+    settingsOfflineMsg.textContent = ''
+    if(open) settingsOfflineName.focus()
+}
+
+document.getElementById('settingsAddOfflineAccount').onclick = () => toggleSettingsOfflineForm(settingsOfflineForm.hidden)
+document.getElementById('settingsOfflineCancel').onclick = () => toggleSettingsOfflineForm(false)
+
+document.getElementById('settingsOfflineConfirm').onclick = () => {
+    const username = settingsOfflineName.value.trim()
+    // Minecraft só aceita 3-16 caracteres de [a-zA-Z0-9_] como nome.
+    let error = null
+    if(username.length < 3) error = Lang.queryJS('loginOptions.offline.errorTooShort')
+    else if(username.length > 16) error = Lang.queryJS('loginOptions.offline.errorTooLong')
+    else if(!/^[a-zA-Z0-9_]+$/.test(username)) error = Lang.queryJS('loginOptions.offline.errorInvalidChars')
+    if(error){
+        settingsOfflineName.classList.add('rcInputError')
+        settingsOfflineMsg.textContent = error
+        settingsOfflineName.focus()
+        return
+    }
+    try {
+        const account = AuthManager.addOfflineAccount(username)
+        updateSelectedAccount(account)
+        toggleSettingsOfflineForm(false)
+        prepareAccountsTab()
+        if(window.rcToast) window.rcToast('Passaporte carimbado', `${username} agora é a conta selecionada.`, '✦')
+    } catch(err) {
+        console.error('Offline account error:', err)
+        settingsOfflineMsg.textContent = Lang.queryJS('loginOptions.offline.errorGeneric')
+    }
+}
+
+settingsOfflineName.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') document.getElementById('settingsOfflineConfirm').click()
+    if(e.key === 'Escape') toggleSettingsOfflineForm(false)
+})
+
 // Bind reply for Microsoft Login.
 ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
     if (arguments_[0] === MSFT_REPLY_TYPE.ERROR) {
@@ -1157,9 +1203,9 @@ settingsMinRAMRange.onchange = (e) => {
 
     // Change range bar color based on the selected value.
     if(sMinV >= max/2){
-        bar.style.background = '#e86060'
+        bar.style.background = 'var(--danger)'
     } else if(sMinV >= max/4) {
-        bar.style.background = '#e8e18b'
+        bar.style.background = 'var(--gold-soft)'
     } else {
         bar.style.background = null
     }
@@ -1189,9 +1235,9 @@ settingsMaxRAMRange.onchange = (e) => {
 
     // Change range bar color based on the selected value.
     if(sMaxV >= max/2){
-        bar.style.background = '#e86060'
+        bar.style.background = 'var(--danger)'
     } else if(sMaxV >= max/4) {
-        bar.style.background = '#e8e18b'
+        bar.style.background = 'var(--gold-soft)'
     } else {
         bar.style.background = null
     }
@@ -1252,13 +1298,14 @@ function bindRangeSlider(){
             document.onmousemove = (e) => {
 
                 // Distance from the beginning of the bar in pixels.
-                const diff = e.pageX - v.offsetLeft - track.offsetWidth/2
+                // (getBoundingClientRect: independe de onde a barra está no layout)
+                const rect = v.getBoundingClientRect()
+                const diff = Math.min(Math.max(e.clientX - rect.left, 0), rect.width)
                 
-                // Don't move the track off the bar.
-                if(diff >= 0 && diff <= v.offsetWidth-track.offsetWidth/2){
+                {
 
                     // Convert the difference to a percentage.
-                    const perc = (diff/v.offsetWidth)*100
+                    const perc = (diff/rect.width)*100
                     // Calculate the percentage of the closest notch.
                     const notch = Number(perc/sliderMeta.inc).toFixed(0)*sliderMeta.inc
 
@@ -1419,8 +1466,8 @@ function populateVersionInformation(version, valueElement, titleElement, checkEl
     valueElement.innerHTML = version
     if(isPrerelease(version)){
         titleElement.innerHTML = Lang.queryJS('settings.about.preReleaseTitle')
-        titleElement.style.color = '#ff886d'
-        checkElement.style.background = '#ff886d'
+        titleElement.style.color = 'var(--arcane-soft)'
+        checkElement.style.background = 'var(--arcane)'
     } else {
         titleElement.innerHTML = Lang.queryJS('settings.about.stableReleaseTitle')
         titleElement.style.color = null

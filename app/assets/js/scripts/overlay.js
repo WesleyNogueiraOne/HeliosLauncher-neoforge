@@ -85,25 +85,14 @@ function toggleOverlay(toggleState, dismissable = false, content = 'overlayConte
         } else {
             $('#overlayDismiss').hide()
         }
-        $('#overlayContainer').fadeIn({
-            duration: 250,
-            start: () => {
-                if(getCurrentView() === VIEWS.settings){
-                    document.getElementById('settingsContainer').style.backgroundColor = 'transparent'
-                }
-            }
-        })
+        $('#overlayContainer').fadeIn(250)
     } else {
+        window.rcAccountSelectStandalone = false
         document.getElementById('main').removeAttribute('overlay')
         // Make things tabbable.
         $('#main *').removeAttr('tabindex')
         $('#overlayContainer').fadeOut({
             duration: 250,
-            start: () => {
-                if(getCurrentView() === VIEWS.settings){
-                    document.getElementById('settingsContainer').style.backgroundColor = 'rgba(0, 0, 0, 0.50)'
-                }
-            },
             complete: () => {
                 $('#' + content).parent().children().hide()
                 $('#' + content).show()
@@ -224,6 +213,13 @@ document.getElementById('serverSelectCancel').addEventListener('click', () => {
 })
 
 document.getElementById('accountSelectCancel').addEventListener('click', () => {
+    // Aberto pela ficha ("Trocar conta"): só fecha. Aberto pelo fluxo de
+    // validação de conta: volta para o aviso que o chamou.
+    if(window.rcAccountSelectStandalone){
+        window.rcAccountSelectStandalone = false
+        toggleOverlay(false)
+        return
+    }
     $('#accountSelectContent').fadeOut(250, () => {
         $('#overlayContent').fadeIn(250)
     })
@@ -299,7 +295,7 @@ function populateAccountListings(){
     let htmlString = ''
     for(let i=0; i<accounts.length; i++){
         htmlString += `<button class="accountListing" uuid="${accounts[i].uuid}" ${i===0 ? 'selected' : ''}>
-            <img src="https://mc-heads.net/head/${accounts[i].uuid}/40">
+            <img src="https://mc-heads.net/avatar/${accounts[i].uuid}/40">
             <div class="accountListingName">${accounts[i].displayName}</div>
         </button>`
     }

@@ -1,0 +1,139 @@
+/* ═══════════════════════════════════════════════════════════════
+   ROOT CLIENT · PASSAPORTE (login) · BOAS-VINDAS · ESPERA
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════ PASSAPORTE */
+#loginOptionsContent {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(400px, 1fr);
+}
+
+.rc-login-art {
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 48px 52px;
+}
+.rc-login-art-shade {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+        linear-gradient(90deg, transparent 40%, rgba(16,20,28,.9) 100%),
+        linear-gradient(0deg, rgba(16,20,28,.92) 0%, transparent 60%);
+}
+.rc-kingdom { position: relative; z-index: 1; max-width: 460px; }
+.rc-kingdom-name {
+    font-size: 56px; line-height: 1; margin-top: 12px;
+    color: var(--text);
+    text-shadow: 0 6px 40px #000a;
+}
+.rc-kingdom-epithet { font-family: var(--font-display); font-style: italic; font-size: 19px; color: var(--gold-soft); margin-top: 10px; }
+.rc-kingdom-root { font-size: 12px; letter-spacing: .08em; color: var(--muted); margin-top: 6px; }
+.rc-kingdom.is-in .rc-kingdom-name,
+.rc-kingdom.is-in .rc-kingdom-epithet,
+.rc-kingdom.is-in .rc-kingdom-root { animation: rcRise .7s var(--ease-out) both; }
+.rc-kingdom.is-in .rc-kingdom-epithet { animation-delay: .08s; }
+.rc-kingdom.is-in .rc-kingdom-root { animation-delay: .16s; }
+@keyframes rcRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.rc-kingdom-dots { position: relative; z-index: 1; display: flex; gap: 8px; margin-top: 24px; }
+.rc-kingdom-dot {
+    width: 8px; height: 8px; padding: 0;
+    border: 1px solid var(--gold); background: transparent;
+    transform: rotate(45deg);
+    transition: background .2s, transform .2s;
+}
+.rc-kingdom-dot.active { background: var(--gold); transform: rotate(45deg) scale(1.15); }
+.rc-login-quote {
+    position: absolute; z-index: 1; top: 40px; left: 52px; margin: 0;
+    font-family: var(--font-display); font-style: italic; font-size: 15px; color: #ece7debf;
+    max-width: 320px;
+}
+.rc-login-quote cite { display: block; margin-top: 4px; font-style: normal; font-family: var(--font-ui); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-2); }
+
+.rc-passport {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 40px 48px;
+    background: linear-gradient(180deg, rgba(20,27,36,.94), rgba(16,22,30,.97));
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+}
+.rc-passport::before {
+    content: ""; position: absolute; inset: 14px; pointer-events: none;
+    border: 1px solid #c98a3f1c; border-radius: var(--r-module);
+}
+.rcLoginLogo { width: 52px; height: 52px; object-fit: contain; margin-bottom: 18px; filter: drop-shadow(0 0 18px #c98a3f40); }
+.rc-passport-title { font-size: 28px; line-height: 1.2; margin: 10px 0 26px; max-width: 380px; }
+
+.loginOptionActions { width: 100%; }
+.loginOptionButtonContainer + .loginOptionButtonContainer { margin-top: 10px; }
+.rc-passport-option {
+    width: 100%;
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border-strong);
+    background: #ffffff04;
+    text-align: left;
+    transition: border-color .2s, background .2s, transform .2s var(--ease-out), box-shadow .2s;
+}
+.rc-passport-option:hover { border-color: var(--teal); background: #5fcdbd12; transform: translateY(-1px); }
+.rc-passport-option.is-primary { border-color: #c98a3f80; background: linear-gradient(180deg, #c98a3f1f, #c98a3f0a); box-shadow: var(--glow-gold); }
+.rc-passport-option.is-primary:hover { border-color: var(--gold-soft); background: linear-gradient(180deg, #c98a3f2e, #c98a3f12); }
+.rc-passport-icon { width: 40px; height: 40px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: var(--bg-2); border: 1px solid var(--border); color: var(--muted); }
+.rc-passport-label { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.rc-passport-label b { font-size: 14px; font-weight: 600; color: var(--text); }
+.rc-passport-label small { font-size: 12px; color: var(--muted); margin-top: 1px; }
+.rc-passport-arrow { color: var(--muted-2); font-size: 16px; transition: transform .2s var(--ease-out), color .2s; }
+.rc-passport-option:hover .rc-passport-arrow { transform: translateX(3px); color: var(--text); }
+
+#offlineLoginForm { width: 100%; animation: rcRise .35s var(--ease-out) both; }
+.rc-field-label { display: block; font-family: var(--font-display); font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+#offlineUsernameInput { width: 100%; height: 48px; font-size: 15px; }
+.rcHint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.rc-passport-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; }
+.rc-passport-actions .rc-btn-gold { flex: 1; }
+
+.rc-passport-foot { display: flex; align-items: center; gap: 14px; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--muted); }
+.rc-passport-legal { margin-top: 8px; font-size: 11px; color: var(--muted-2); letter-spacing: .04em; }
+.rc-passport-legal a { color: var(--muted); }
+#loginOptionCancelContainer { margin-top: 18px; }
+
+@media (max-width: 1100px) {
+    #loginOptionsContent { grid-template-columns: minmax(0, 1fr) 420px; }
+    .rc-kingdom-name { font-size: 44px; }
+    .rc-passport { padding: 32px 36px; }
+}
+
+/* ═══════════════════════════════ BOAS-VINDAS */
+#welcomeContainer { display: flex; align-items: center; justify-content: center; padding: 24px; }
+#welcomeContainer[style*="none"] { display: none !important; }
+#welcomeContent {
+    width: min(620px, 100%);
+    max-height: 100%; overflow-y: auto;
+    padding: 36px 44px 32px;
+    display: flex; flex-direction: column; align-items: flex-start;
+    background: linear-gradient(180deg, rgba(20,27,36,.94), rgba(16,22,30,.97));
+    animation: rcRise .6s var(--ease-out) both;
+}
+#welcomeImageSeal { height: 40px; object-fit: contain; margin-bottom: 20px; position: relative; z-index: 1; }
+#welcomeHeader { font-size: 34px; line-height: 1.1; margin: 10px 0 12px; }
+#welcomeDescription { font-size: 13.5px; line-height: 1.7; color: #c3c9d4; }
+.rc-welcome-steps { list-style: none; padding: 0; margin: 22px 0 18px; width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; counter-reset: step; position: relative; z-index: 1; }
+.rc-welcome-steps li { counter-increment: step; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--r-inner); background: #ffffff04; display: flex; flex-direction: column; gap: 3px; }
+.rc-welcome-steps li::before { content: counter(step, upper-roman); font-family: var(--font-display); color: var(--gold-soft); font-size: 13px; }
+.rc-welcome-steps b { font-size: 13px; font-weight: 600; }
+.rc-welcome-steps span { font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+#welcomeDescCTA { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+#welcomeButton { height: 48px; padding: 0 28px; letter-spacing: .14em; text-transform: uppercase; position: relative; z-index: 1; }
+
+/* ═══════════════════════════════ ESPERA (login Microsoft) */
+#waitingContainer { display: flex; align-items: center; justify-content: center; }
+#waitingContainer[style*="none"] { display: none !important; }
+#waitingContent {
+    padding: 32px 40px; max-width: 420px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+    background: linear-gradient(180deg, rgba(20,27,36,.94), rgba(16,22,30,.97));
+}
+#waitingContent h2 { font-size: 22px; }
+#waitingContent p { font-size: 13px; color: var(--muted); }
+.rc-spinner--lg { width: 34px; height: 34px; border-width: 3px; margin-bottom: 8px; }

@@ -27,7 +27,7 @@ window.eval = global.eval = function () {
 
 // Display warning when devtools window is opened.
 remote.getCurrentWebContents().on('devtools-opened', () => {
-    console.log('%cPARE!', 'color: #e7b23e; -webkit-text-stroke: 2px #2a1a05; font-size: 56px; font-weight: bold')
+    console.log('%cPARE!', 'color: #c98a3f; -webkit-text-stroke: 2px #21160a; font-size: 56px; font-weight: bold')
     console.log('%cSe alguém pediu pra você colar algo aqui, é golpe. Isso pode dar acesso à sua conta.', 'font-size: 15px')
     console.log('%cSe não sabe exatamente o que está fazendo, feche esta janela.', 'font-size: 15px')
 })
@@ -108,6 +108,9 @@ function changeAllowPrerelease(val){
 function showUpdateUI(info){
     //TODO Make this message a bit more informative `${info.version}`
     document.getElementById('image_seal_container').setAttribute('update', true)
+    if(typeof window.rcToast === 'function'){
+        window.rcToast('Atualização disponível', `Root Client v${info.version} está pronto.`, '⟳')
+    }
     document.getElementById('image_seal_container').onclick = () => {
         /*setOverlayContent('Update Available', 'A new update for the launcher is available. Would you like to install now?', 'Install', 'Later')
         setOverlayHandler(() => {

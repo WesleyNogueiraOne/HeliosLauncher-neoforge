@@ -1,6 +1,6 @@
 {
   "name": "root-client",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "productName": "Root Client",
   "description": "Root Client - Launcher Root RP",
   "author": "Root RP",
@@ -39,6 +39,7 @@
     "jquery": "^3.7.1",
     "lodash.merge": "^4.6.2",
     "semver": "^7.6.3",
+    "skinview3d": "^3.4.2",
     "toml": "^3.0.0"
   },
   "devDependencies": {
