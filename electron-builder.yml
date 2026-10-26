@@ -10,7 +10,7 @@ compression: 'maximum'
 publish:
   provider: 'github'
   owner: 'WesleyNogueiraOne'
-  repo: 'RootClient'
+  repo: 'RootClient-releases'
 
 files:
   - '!{dist,.gitignore,.vscode,.github,docs,patches,README.md,dev-app-update.yml,.nvmrc,.eslintrc.json,.eslintignore,*.log}'
