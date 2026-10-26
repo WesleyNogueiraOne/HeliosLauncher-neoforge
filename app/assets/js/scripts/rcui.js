@@ -69,15 +69,8 @@
     }
 
     // ═══════════════════════════════ CARROSSEL DE REINOS (login)
-    const KINGDOMS = [
-        { name: 'Shin Kairen', epithet: 'A Vila da Lâmina Oculta', root: 'Fundada por Fujitsu Kaoro aos pés do Monte Hinguru' },
-        { name: 'Wargheim', epithet: 'A Fortaleza dos Lobos', root: 'Warg: lobo · Heim: fortaleza' },
-        { name: 'Sahiin', epithet: 'A Flor do Deserto', root: 'Templos de serpente sob a areia' },
-        { name: 'Miralac', epithet: 'O Lago Espelhado', root: 'Piratas, peixes-dragão e a Taverna Queixo Caído' },
-        { name: 'Timenor', epithet: 'O Reino dos Colossais', root: 'Vapor e engenho · Progresso e Ordem' },
-        { name: 'Cinndor', epithet: 'A Cidade das Cinzas', root: 'Onde o Rei Rato dita as regras' },
-        { name: 'Dargor', epithet: 'A Montanha Solitária', root: 'Minas profundas e cristais vivos' }
-    ]
+    // Dados dos reinos: reinos.js (window.RC_REINOS).
+    const KINGDOMS = window.RC_REINOS || []
 
     function setupKingdoms() {
         const host = document.getElementById('rcKingdom')

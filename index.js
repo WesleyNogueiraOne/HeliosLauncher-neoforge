@@ -106,9 +106,14 @@ ipcMain.handle(SHELL_OPCODE.TRASH_ITEM, async (event, ...args) => {
     }
 })
 
-// Disable hardware acceleration.
-// https://electronjs.org/docs/tutorial/offscreen-rendering
-app.disableHardwareAcceleration()
+// Aceleração por GPU fica ligada: sem ela, vídeo de fundo, blur, WebGL da skin e a
+// composição toda rodam na CPU, e a interface fica mais lenta quanto maior a janela.
+// (O Helios desligava isso por causa de um overlay antigo que não existe mais.)
+// O Chromium já cai pra software sozinho em GPU/driver da lista negra dele.
+// Saída de emergência pra driver problemático: `--no-gpu` ou ROOT_DISABLE_GPU=1.
+if(process.argv.includes('--no-gpu') || process.env.ROOT_DISABLE_GPU === '1'){
+    app.disableHardwareAcceleration()
+}
 
 const REDIRECT_URI_PREFIX = 'https://login.microsoftonline.com/common/oauth2/nativeclient?'
 

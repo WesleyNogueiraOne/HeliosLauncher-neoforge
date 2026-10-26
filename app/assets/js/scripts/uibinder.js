@@ -37,8 +37,15 @@ let currentView
  * @param {*} onNextFade Optional. Callback function to execute when the next view
  * fades in.
  */
+// Teto dos fades de troca de tela. O Helios usava 500 ms + 500 ms em sequência
+// (1 s parado a cada navegação); as chamadas ainda passam 500, então limita aqui.
+const VIEW_FADE_OUT_MAX = 120
+const VIEW_FADE_IN_MAX = 180
+
 function switchView(current, next, currentFadeTime = 500, nextFadeTime = 500, onCurrentFade = () => {}, onNextFade = () => {}){
     currentView = next
+    currentFadeTime = Math.min(currentFadeTime, VIEW_FADE_OUT_MAX)
+    nextFadeTime = Math.min(nextFadeTime, VIEW_FADE_IN_MAX)
     $(`${current}`).fadeOut(currentFadeTime, async () => {
         await onCurrentFade()
         $(`${next}`).fadeIn(nextFadeTime, async () => {
@@ -102,6 +109,8 @@ async function showMainUI(data){
     // (depois do login a landing já aparece preenchida).
     loadRootNews()
     loadEvents()
+    // O boot usou o distro local: a pré-sincronização busca o remoto e confere os arquivos.
+    rcPresync.start()
 }
 
 function showFatalStartupError(){
@@ -423,7 +432,10 @@ document.addEventListener('readystatechange', async () => {
 }, false)
 
 // Actions that must be performed after the distribution index is downloaded.
-ipcRenderer.on('distributionIndexDone', async (event, res) => {
+let distroIndexHandled = false
+async function onDistributionIndexDone(res) {
+    if(distroIndexHandled) return
+    distroIndexHandled = true
     if(res) {
         const data = await DistroAPI.getDistribution()
         syncModConfigurations(data)
@@ -441,7 +453,10 @@ ipcRenderer.on('distributionIndexDone', async (event, res) => {
             rscShouldLoad = true
         }
     }
-})
+}
+ipcRenderer.on('distributionIndexDone', (event, res) => onDistributionIndexDone(res))
+// O preloader pode ter terminado antes deste script carregar (distro local é instantâneo).
+if(window.rcDistroIndexDone !== undefined) onDistributionIndexDone(window.rcDistroIndexDone)
 
 // Util for development
 async function devModeToggle() {

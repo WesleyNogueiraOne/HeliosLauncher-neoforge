@@ -39,11 +39,17 @@ function onDistroLoad(data){
             ConfigManager.save()
         }
     }
+    // Com o distro local isto pode acontecer antes do uibinder.js registrar o
+    // listener do IPC: deixa o resultado guardado pra ele conferir ao carregar.
+    globalThis.rcDistroIndexDone = data != null
     ipcRenderer.send('distributionIndexDone', data != null)
 }
 
-// Ensure Distribution is downloaded and cached.
-DistroAPI.getDistribution()
+// Abre com a cópia local do distro, sem esperar a rede: a pré-sincronização
+// da landing (landing.js · rcPresync) busca a versão remota logo depois.
+// Primeira abertura, sem cópia local: baixa a remota como antes.
+DistroAPI.getDistributionLocalLoadOnly()
+    .catch(() => DistroAPI.getDistribution())
     .then(heliosDistro => {
         logger.info('Loaded distribution index.')
 

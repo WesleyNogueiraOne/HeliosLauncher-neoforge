@@ -266,7 +266,8 @@ function setAccountListingHandlers(){
 async function populateServerListings(){
     const distro = await DistroAPI.getDistribution()
     const giaSel = ConfigManager.getSelectedServer()
-    const servers = distro.servers
+    // Mesmo filtro dos Portais da ficha (landing.js): só o que este jogador pode abrir.
+    const servers = typeof rcVisibleServers === 'function' ? rcVisibleServers(distro) : distro.servers
     let htmlString = ''
     for(const serv of servers){
         htmlString += `<button class="serverListing" servid="${serv.rawServer.id}" ${serv.rawServer.id === giaSel ? 'selected' : ''}>

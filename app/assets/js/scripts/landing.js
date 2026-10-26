@@ -50,6 +50,7 @@ function toggleLaunchArea(loading){
         launch_details.style.display = 'none'
         launch_content.style.display = 'inline-flex'
     }
+    if(window.rcBancada) window.rcBancada.render()
 }
 
 /**
@@ -58,7 +59,9 @@ function toggleLaunchArea(loading){
  * @param {string} details The new text for the loading details.
  */
 function setLaunchDetails(details){
-    launch_details_text.innerHTML = details
+    // Etapas conhecidas viram fala do reino (reinos.js); o resto passa direto.
+    if(window.rcReinos) window.rcReinos.narrate(launch_details_text, details)
+    else launch_details_text.innerHTML = details
 }
 
 /**
@@ -169,14 +172,256 @@ function updateSelectedServer(serv){
     ConfigManager.setSelectedServer(serv != null ? serv.rawServer.id : null)
     ConfigManager.save()
     server_selection_button.textContent = serv != null ? serv.rawServer.name : Lang.queryJS('landing.noSelection')
-    document.getElementById('rcFichaServer').textContent = serv != null ? serv.rawServer.name : '—'
     document.getElementById('rcFichaVersion').textContent = serv != null ? serv.rawServer.minecraftVersion : '—'
-    document.getElementById('rcFichaPack').textContent = serv != null ? 'v' + serv.rawServer.version : '—'
+    document.getElementById('rcFichaPackVer').textContent = serv != null ? 'v' + serv.rawServer.version : '—'
     if(getCurrentView() === VIEWS.settings){
         animateSettingsTabRefresh()
     }
     setLaunchEnabled(serv != null)
+    renderPortais()
+    if(serv != null) rcPresync.onServerChanged(serv.rawServer.id)
+    if(window.rcBancada) window.rcBancada.render()
 }
+
+// ═══════════════════════════════ PORTAIS (versões na ficha)
+// Campos opcionais por servidor no distribution.json:
+//   "shortName": "Staff"                  rótulo do chip (padrão: o que vem depois de " · " no name)
+//   "access": ["MANAGER","ADMIN","OWNER"] quem vê o portal: role ou staffTitle do /api/launcher/me.
+//                                         Sem "access", todos veem.
+// Esconder um portal é só UX: o distribution.json é público.
+let rcMe = null
+
+function rcPortalShortName(raw) {
+    if(raw.shortName) return raw.shortName
+    const parts = String(raw.name || raw.id).split(' · ')
+    return parts[parts.length - 1]
+}
+
+function rcPortalAllowed(raw) {
+    if(!Array.isArray(raw.access) || raw.access.length === 0) return true
+    if(!rcMe) return false
+    return raw.access.includes(rcMe.role) || (rcMe.staffTitle != null && raw.access.includes(rcMe.staffTitle))
+}
+
+/** Servidores que este jogador pode abrir. O selecionado sempre entra, pra ninguém ficar preso. */
+function rcVisibleServers(distro) {
+    const sel = ConfigManager.getSelectedServer()
+    return distro.servers.filter(s => s.rawServer.id === sel || rcPortalAllowed(s.rawServer))
+}
+
+function rcPortaisLocked() {
+    return launch_content.style.display === 'none' || document.body.classList.contains('rc-in-game')
+}
+
+async function renderPortais() {
+    const host = document.getElementById('rcPortais')
+    const list = document.getElementById('rcPortaisList')
+    let distro
+    try { distro = await DistroAPI.getDistribution() } catch { return }
+    if(distro == null) return
+
+    const sel = ConfigManager.getSelectedServer()
+    const servers = rcVisibleServers(distro)
+    const current = servers.find(s => s.rawServer.id === sel)
+
+    // Selo no botão Jogar quando não é o servidor principal.
+    document.getElementById('rcPlayPortal').textContent = current && !current.rawServer.mainServer ? rcPortalShortName(current.rawServer) : ''
+
+    // Só uma opção: não há o que escolher.
+    host.hidden = servers.length < 2
+    if(host.hidden) return
+
+    list.innerHTML = servers.map(s => {
+        const raw = s.rawServer
+        const active = raw.id === sel
+        const restricted = Array.isArray(raw.access) && raw.access.length > 0
+        return `<button class="rc-portal${active ? ' is-active' : ''}${restricted ? ' is-restricted' : ''}" role="radio" aria-checked="${active}"
+            data-servid="${rcEscape(raw.id)}" data-tip="${rcEscape(raw.description || raw.name)}">${rcEscape(rcPortalShortName(raw))}</button>`
+    }).join('')
+}
+
+async function rcSelectPortal(id) {
+    if(id === ConfigManager.getSelectedServer()) return
+    if(rcPortaisLocked()) {
+        window.rcToast && window.rcToast('Portal travado', 'Espere a viagem atual terminar para trocar de versão.', '◆', 2500)
+        return
+    }
+    const serv = (await DistroAPI.getDistribution()).getServerById(id)
+    if(serv == null) return
+    updateSelectedServer(serv)
+    refreshServerStatus(true)
+    const fx = document.getElementById('rcPortais')
+    fx.classList.remove('is-shift'); void fx.offsetWidth; fx.classList.add('is-shift')
+}
+
+document.getElementById('rcPortaisList').addEventListener('click', e => {
+    const btn = e.target.closest('.rc-portal')
+    if(btn) rcSelectPortal(btn.dataset.servid)
+})
+document.getElementById('rcPortaisAll').onclick = async e => {
+    e.target.blur()
+    await toggleServerSelection(true)
+}
+
+// ═══════════════════════════════ PRÉ-SINCRONIZAÇÃO
+// Confere e baixa os arquivos da versão selecionada em segundo plano, pra o
+// Jogar só precisar conferir. Roda ao abrir o launcher, ao trocar de portal e
+// a cada 30 min parado. Nunca roda com o jogo aberto ou durante um launch.
+const rcPresync = (() => {
+    const log = LoggerUtil.getLogger('Presync')
+    const RECHECK_MS = 30 * 60 * 1000
+    const state = { status: 'idle', serverId: null, percent: 0, at: 0, error: null }
+    let running = null   // Promise da rodada atual
+    let repair = null    // FullRepair da rodada atual
+    let cancelled = false
+    let dirty = false    // trocaram de portal durante a rodada
+    let mirror = false   // o Jogar está esperando: espelha o progresso na barra de XP
+    let timer = null
+
+    function set(patch) {
+        Object.assign(state, patch)
+        renderSync()
+        if(mirror) {
+            setLaunchDetails(state.status === 'downloading' ? 'Terminando a atualização do modpack…' : Lang.queryJS('landing.dlAsync.pleaseWait'))
+            setLaunchPercentage(state.percent)
+        }
+    }
+
+    function blocked() {
+        return proc != null || launch_content.style.display === 'none' || document.body.classList.contains('rc-in-game')
+    }
+
+    function schedule(delay) {
+        clearTimeout(timer)
+        timer = setTimeout(run, delay)
+    }
+
+    // Rejeita se o processo filho morrer sem responder (senão a promessa fica pendurada).
+    function guard(promise, child) {
+        return Promise.race([promise, new Promise((_, rej) => child.once('close', code => rej(new Error(`receiver saiu (${code})`))))])
+    }
+
+    async function syncOnce() {
+        let serverId = ConfigManager.getSelectedServer()
+        set({ status: 'checking', serverId, percent: 0, error: null })
+
+        // Busca o distro remoto (o boot usou a cópia local) e atualiza a interface.
+        const distro = await DistroAPI.refreshDistributionOrFallback()
+        if(distro.getServerById(serverId) == null) {
+            serverId = distro.getMainServer().rawServer.id
+            ConfigManager.setSelectedServer(serverId)
+            ConfigManager.save()
+            set({ serverId })
+        }
+        if(getCurrentView() === VIEWS.settings) { loadRootNews(); loadEvents() }
+        else onDistroRefresh(distro)
+
+        repair = new FullRepair(
+            ConfigManager.getCommonDirectory(),
+            ConfigManager.getInstanceDirectory(),
+            ConfigManager.getLauncherDirectory(),
+            serverId,
+            DistroAPI.isDevMode()
+        )
+        repair.spawnReceiver()
+        const child = repair.childProcess
+        child.on('error', err => log.warn('Erro no receiver.', err))
+        // Prioridade baixa: o launcher e o PC continuam leves enquanto confere.
+        try { require('os').setPriority(child.pid, require('os').constants.priority.PRIORITY_BELOW_NORMAL) } catch { /* sem permissão: segue em prioridade normal */ }
+
+        const invalid = await guard(repair.verifyFiles(percent => set({ percent })), child)
+        let downloaded = false
+        if(invalid > 0) {
+            log.info(`${invalid} arquivo(s) para baixar.`)
+            set({ status: 'downloading', percent: 0 })
+            await guard(repair.download(percent => set({ percent })), child)
+            downloaded = true
+        }
+        repair.destroyReceiver()
+        set({ status: 'ready', percent: 100, at: Date.now() })
+        if(downloaded && !mirror && window.rcToast) window.rcToast('Modpack atualizado', 'Tudo pronto pra viagem.', '✓')
+    }
+
+    async function run() {
+        clearTimeout(timer)
+        if(running) { dirty = true; return running }
+        if(blocked()) { schedule(RECHECK_MS); return }
+        cancelled = false
+        dirty = false
+        running = syncOnce()
+            .catch(err => {
+                try { repair && repair.childProcess && repair.childProcess.kill() } catch { /* já encerrado */ }
+                if(cancelled) { set({ status: 'idle' }); return }
+                log.warn('Pré-sincronização falhou.', err)
+                set({ status: navigator.onLine ? 'error' : 'offline', error: (err && (err.displayable || err.message)) || null })
+            })
+            .finally(() => {
+                repair = null
+                running = null
+                schedule(dirty ? 500 : RECHECK_MS)
+            })
+        return running
+    }
+
+    return {
+        state,
+        start: () => schedule(2500),
+        onServerChanged(id) {
+            if(id === state.serverId) return
+            if(running) dirty = true
+            else schedule(1500)
+        },
+        // Chamado pelo Jogar antes de abrir o próprio FullRepair (dois processos não
+        // podem escrever nos mesmos arquivos). Conferindo: cancela, o Jogar confere
+        // em prioridade normal. Baixando: espera terminar mostrando o progresso.
+        async handoff() {
+            clearTimeout(timer)
+            if(!running) return
+            if(state.status === 'checking') {
+                cancelled = true
+                try { repair && repair.childProcess && repair.childProcess.kill() } catch { /* já encerrado */ }
+            }
+            mirror = true
+            set({})
+            await running
+            mirror = false
+        },
+        // O Jogar terminou de conferir e baixar: conta como sincronizado.
+        markReady(serverId) { set({ status: 'ready', serverId, percent: 100, at: Date.now(), error: null }) }
+    }
+})()
+
+function renderSync() {
+    const el = document.getElementById('rcSync')
+    const dd = document.getElementById('rcFichaPack')
+    const s = rcPresync.state
+    const hhmm = s.at ? new Date(s.at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : ''
+    const view = {
+        idle:        ['', ''],
+        checking:    ['conferindo…', 'Conferindo os arquivos do modpack em segundo plano'],
+        downloading: [`↓ ${s.percent}%`, 'Baixando a atualização do modpack em segundo plano'],
+        ready:       ['✓ pronto', `Arquivos conferidos às ${hhmm}. Pronto pra viagem.`],
+        error:       ['! erro', `Não deu pra sincronizar: ${s.error || 'veja o console'}. O Jogar tenta de novo.`],
+        offline:     ['offline', 'Sem internet: o Jogar usa os arquivos que já estão no PC.']
+    }[s.status] || ['', '']
+    el.textContent = view[0]
+    el.dataset.state = s.status
+    dd.title = view[1]
+}
+
+// ← / → trocam de portal na landing (fora de campos e sem overlay aberto).
+document.addEventListener('keydown', async e => {
+    if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+    if(e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
+    if(e.target.closest?.('input, textarea, select, [contenteditable]')) return
+    if(getCurrentView() !== VIEWS.landing || document.getElementById('main').hasAttribute('overlay')) return
+    if(document.getElementById('rcPortais').hidden) return
+    const servers = rcVisibleServers(await DistroAPI.getDistribution())
+    const i = servers.findIndex(s => s.rawServer.id === ConfigManager.getSelectedServer())
+    const next = servers[(i + (e.key === 'ArrowRight' ? 1 : -1) + servers.length) % servers.length]
+    e.preventDefault()
+    rcSelectPortal(next.rawServer.id)
+})
 // Real text is set in uibinder.js on distributionIndexDone.
 server_selection_button.textContent = Lang.queryJS('landing.selectedServer.loading')
 server_selection_button.onclick = async e => {
@@ -436,6 +681,10 @@ async function dlAsync(login = true) {
     toggleLaunchArea(true)
     setLaunchPercentage(0, 100)
 
+    // Se a pré-sincronização está baixando, aproveita o que ela já fez.
+    await rcPresync.handoff()
+    setLaunchPercentage(0, 100)
+
     const fullRepairModule = new FullRepair(
         ConfigManager.getCommonDirectory(),
         ConfigManager.getInstanceDirectory(),
@@ -492,6 +741,7 @@ async function dlAsync(login = true) {
 
     // Remove download bar.
     remote.getCurrentWindow().setProgressBar(-1)
+    rcPresync.markReady(serv.rawServer.id)
 
     fullRepairModule.destroyReceiver()
 
@@ -505,6 +755,12 @@ async function dlAsync(login = true) {
         distro,
         serv.rawServer.id
     )
+
+    // Bancada: atualiza os mods opcionais e desativa os proibidos antes de abrir.
+    if(!(await window.rcBancada.guard(distro, serv))) {
+        toggleLaunchArea(false)
+        return
+    }
 
     const modLoaderData = await distributionIndexProcessor.loadModLoaderVersionJson(serv)
     const versionData = await mojangIndexProcessor.getVersionJson()
@@ -583,6 +839,7 @@ async function dlAsync(login = true) {
             // Se o jogo fechar antes de ser detectado (crash, fechado cedo),
             // libera o botão em vez de deixar "preparando" pra sempre.
             proc.on('close', () => {
+                if(window.rcBancada) window.rcBancada.render()
                 if(!loadCompleted){
                     loadCompleted = true
                     toggleLaunchArea(false)
@@ -634,6 +891,7 @@ function rcShowGazetaTab(target){
     if(target === 'journal') loadJournal()
     if(target === 'events') loadEvents()
     if(target === 'tickets' && window.rcLoadTickets) window.rcLoadTickets()
+    if(target === 'bancada' && window.rcBancada) window.rcBancada.render()
 }
 document.querySelectorAll('.news-tab').forEach(tab => {
     tab.addEventListener('click', () => rcShowGazetaTab(tab.getAttribute('data-tab')))
@@ -766,11 +1024,18 @@ async function rcRawDistro() {
     return distro.rawDistribution || distro
 }
 
+// Assinatura do último conteúdo desenhado por lista: a pré-sincronização
+// recarrega o distro, e redesenhar igual faria as imagens piscarem.
+const rcFeedSig = {}
+
 async function loadFeed(listId, key, emptyTitle, emptyText, errorText) {
     const list = document.getElementById(listId)
     try {
         const raw = await rcRawDistro()
         const entries = Array.isArray(raw[key]) ? raw[key] : []
+        const sig = JSON.stringify(entries)
+        if(rcFeedSig[listId] === sig) return
+        rcFeedSig[listId] = sig
         if(key === 'news') updateEdition(entries.length)
         if(entries.length === 0) {
             list.innerHTML = `<div class="rc-empty"><b>${emptyTitle}</b>${emptyText}</div>`
@@ -782,6 +1047,7 @@ async function loadFeed(listId, key, emptyTitle, emptyText, errorText) {
             : '')
         bindFeedActions(list)
     } catch(e) {
+        delete rcFeedSig[listId]
         list.innerHTML = `<div class="rc-empty"><b>A prensa travou.</b>${errorText}</div>`
         console.error(`Erro ao carregar ${key}:`, e)
     }
@@ -872,6 +1138,8 @@ setInterval(() => { if(!document.hidden) renderEvents() }, 30000)
 async function refreshSiteLink() {
     const el = document.getElementById('rcFichaLink')
     const me = await ipcRenderer.invoke('rc:me').catch(() => null)
+    rcMe = me && !me.error ? me : null
+    renderPortais()
     if(me && !me.error) {
         el.textContent = 'Vinculado'
         el.classList.add('is-ok')

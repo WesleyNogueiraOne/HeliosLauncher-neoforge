@@ -4,7 +4,7 @@
         <!-- ══════════ FICHA: quem eu sou + entrar no jogo ══════════ -->
         <aside id="rcFicha" class="rc-card rc-card--glow">
             <div class="rc-ficha-head">
-                <span class="rc-eyebrow">Ficha do viajante</span>
+                <span id="rcFichaEyebrow" class="rc-eyebrow">Ficha do viajante</span>
                 <div id="image_seal_container" class="rc-update-chip" data-tip="Ver atualização">
                     <span class="rc-update-dot"></span> Atualização
                     <div id="updateAvailableTooltip"><%- lang('landing.updateAvailableTooltip') %></div>
@@ -24,17 +24,26 @@
             </div>
 
             <dl class="rc-ficha-stats">
-                <div><dt>Servidor</dt><dd id="rcFichaServer">—</dd></div>
+                <div><dt>Reino</dt><dd id="rcFichaReino">—</dd></div>
                 <div><dt>Versão</dt><dd id="rcFichaVersion">—</dd></div>
-                <div><dt>Modpack</dt><dd id="rcFichaPack">—</dd></div>
+                <div><dt>Modpack</dt><dd id="rcFichaPack"><span id="rcFichaPackVer">—</span><span id="rcSync" class="rc-sync"></span></dd></div>
                 <div><dt>Site</dt><dd id="rcFichaLink">—</dd></div>
             </dl>
+
+            <!-- Portais: versões que este jogador pode abrir (landing.js · renderPortais) -->
+            <div id="rcPortais" class="rc-portais" hidden>
+                <div class="rc-portais-head">
+                    <span class="rc-eyebrow">Portal</span>
+                    <button id="rcPortaisAll" class="rc-link rc-portais-all" data-tip="Detalhes das versões">ver todos</button>
+                </div>
+                <div id="rcPortaisList" class="rc-portais-list" role="radiogroup" aria-label="Versão do jogo"></div>
+            </div>
 
             <div class="rc-ficha-launch">
                 <div id="launch_content" class="rc-launch-slot">
                     <button id="launch_button" class="rc-btn-gold rc-btn-play">
                         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
-                        <span><%- lang('landing.launchButton') %></span>
+                        <span class="rc-play-label"><%- lang('landing.launchButton') %><small id="rcPlayPortal" class="rc-play-portal"></small></span>
                     </button>
                 </div>
                 <div class="rc-play-busy"><span class="rc-spinner"></span> Preparando a viagem…</div>
@@ -62,6 +71,7 @@
                     <button class="rc-tab news-tab active" data-tab="news">Gazeta</button>
                     <button class="rc-tab news-tab" data-tab="journal">Crônicas</button>
                     <button class="rc-tab news-tab" data-tab="events">Eventos</button>
+                    <button class="rc-tab news-tab" data-tab="bancada">Bancada</button>
                     <button class="rc-tab news-tab" data-tab="tickets">Tickets <span id="rcTicketsBadge" class="rc-badge" style="display:none;"></span></button>
                 </nav>
             </header>
@@ -74,6 +84,9 @@
                 </div>
                 <div id="rcEventsList" class="news-list" data-content="events" style="display:none;">
                     <div class="rc-news-placeholder"><span class="rc-spinner"></span>Consultando o calendário…</div>
+                </div>
+                <div id="rcBancadaList" class="news-list" data-content="bancada" style="display:none;">
+                    <div class="rc-news-placeholder"><span class="rc-spinner"></span>Acendendo a forja…</div>
                 </div>
                 <div id="rcTicketsList" class="news-list" data-content="tickets" style="display:none;">
                     <div class="rc-news-placeholder"><span class="rc-spinner"></span>Carregando tickets…</div>

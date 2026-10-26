@@ -57,13 +57,20 @@ function startSlideshow(){
 
 // Pausa o vídeo quando não dá pra ver (minimizado) ou com o jogo aberto,
 // pra não gastar CPU/GPU que o Minecraft precisa.
+// Também pausa quando a janela perde o foco: o vídeo continua decodificando mesmo
+// atrás de outras janelas (~20% de CPU), e parado ele vira um fundo estático.
 let bgGameRunning = false
+const bgShouldPause = () => document.hidden || bgGameRunning || !document.hasFocus()
 function syncBackgroundPlayback(){
     if(!bgVideo.isConnected) return
-    if(document.hidden || bgGameRunning) bgVideo.pause()
+    if(bgShouldPause()) bgVideo.pause()
     else bgVideo.play().catch(() => {})
 }
 document.addEventListener('visibilitychange', syncBackgroundPlayback)
+window.addEventListener('blur', syncBackgroundPlayback)
+window.addEventListener('focus', syncBackgroundPlayback)
+// O autoplay começa mesmo com a janela aberta sem foco.
+bgVideo.addEventListener('play', () => { if(bgShouldPause()) bgVideo.pause() })
 window.rcBackground = {
     setGameRunning(running){
         bgGameRunning = !!running
